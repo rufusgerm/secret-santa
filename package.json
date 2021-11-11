@@ -1,6 +1,9 @@
 {
   "name": "secret-santa",
   "private": true,
+  "prisma": {
+    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -8,15 +11,20 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@prisma/client": "^3.4.1",
+    "babel-plugin-superjson-next": "^0.4.2",
     "next": "12.0.3",
     "react": "17.0.2",
-    "react-dom": "17.0.2"
+    "react-dom": "17.0.2",
+    "superjson": "^1.8.0"
   },
   "devDependencies": {
-    "@types/node": "16.11.7",
+    "@types/node": "^16.11.7",
     "@types/react": "17.0.34",
     "eslint": "7.32.0",
     "eslint-config-next": "12.0.3",
-    "typescript": "4.4.4"
+    "prisma": "^3.4.1",
+    "ts-node": "^10.4.0",
+    "typescript": "^4.4.4"
   }
 }

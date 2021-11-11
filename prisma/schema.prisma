@@ -1,0 +1,67 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Family {
+  id               String             @id @default(cuid())
+  name             String             @unique @db.VarChar(250)
+  created_at       DateTime           @default(now())
+  modified_at      DateTime           @default(now())
+  SantasOnFamilies SantasOnFamilies[]
+  Questions        Question[]
+}
+
+model Santa {
+  id                String             @id @default(cuid())
+  first_name        String             @db.VarChar(250)
+  last_name         String             @db.VarChar(250)
+  email             String             @unique @db.VarChar(250)
+  verification_code String?            @db.VarChar(9)
+  is_active         Boolean            @default(false)
+  created_at        DateTime           @default(now())
+  modified_at       DateTime           @default(now())
+  coupled_with_id   String?            @unique
+  coupled_with      Santa?             @relation("SantaToSanta", fields: [coupled_with_id], references: [id])
+  coupler           Santa?             @relation("SantaToSanta")
+  Answers           Answer[]
+  SantasOnFamilies  SantasOnFamilies[]
+}
+
+model SantasOnFamilies {
+  family    Family   @relation(fields: [family_id], references: [id])
+  family_id String
+  santa     Santa    @relation(fields: [santa_id], references: [id])
+  santa_id  String
+  joined_at DateTime @default(now())
+
+  @@id([family_id, santa_id])
+}
+
+model Question {
+  id          Int      @id @default(autoincrement())
+  text        String   @db.VarChar(500)
+  created_at  DateTime @default(now())
+  modified_at DateTime @default(now())
+  family_id   String?
+  Family      Family?  @relation(fields: [family_id], references: [id])
+  Answers     Answer[]
+}
+
+model Answer {
+  id          Int      @id @default(autoincrement())
+  text        String
+  question    Question @relation(fields: [question_id], references: [id])
+  question_id Int
+  created_at  DateTime @default(now())
+  modified_at DateTime @default(now())
+  santa       Santa    @relation(fields: [santa_id], references: [id])
+  santa_id    String
+}
