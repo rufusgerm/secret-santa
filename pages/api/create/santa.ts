@@ -2,29 +2,38 @@ import { NextApiRequest, NextApiResponse } from "next";
 import prisma from "@shared/prisma";
 import { Santa } from ".prisma/client";
 import { generateVerificationCode } from "@shared/utils/verification";
+import { SantaIdOnly } from "../read/all-santas";
 
-export default async function createSanta(req: NextApiRequest, res: NextApiResponse) {
-    if (req.method !== 'POST')
-        return res.status(405).json({ message: "Invalid HTTP Method! Not allowed." })
-    
-    const newSanta: Santa = JSON.parse(req.body);
+export default async function createSanta(
+  req: NextApiRequest,
+  res: NextApiResponse
+): Promise<SantaIdOnly | void> {
+  if (req.method !== "POST")
+    return res
+      .status(405)
+      .json({ message: "Invalid HTTP Method! Not allowed." });
 
-    const checkSanta: Santa | null = await prisma.santa.findUnique({
-        where: {
-            email: newSanta.email
-        }
-    })
+  const newSanta: Santa = JSON.parse(req.body);
 
-    if (checkSanta)
-        return res.status(403).json({ message: "User with that email already exists!" })
+  const checkSanta: Santa | null = await prisma.santa.findUnique({
+    where: {
+      email: newSanta.email,
+    },
+  });
 
-    newSanta.verification_code = generateVerificationCode();
-    
-    const savedSanta: Santa = await prisma.santa.create({
-        data: newSanta
-    })
+  if (checkSanta)
+    return res
+      .status(403)
+      .json({ message: "User with that email already exists!" });
 
-    console.log({ savedSanta })
-    
-    res.json(savedSanta);
+  newSanta.verification_code = generateVerificationCode();
+
+  const savedSanta: SantaIdOnly = await prisma.santa.create({
+    data: newSanta,
+    select: {
+      id: true,
+    },
+  });
+
+  res.json(savedSanta);
 }
