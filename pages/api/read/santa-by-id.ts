@@ -1,19 +1,29 @@
 import { Prisma } from ".prisma/client";
 import prisma from "@shared/prisma";
 
-const santaDetail = Prisma.validator<Prisma.SantaArgs>()({
-  select: { first_name: true, coupled_with_id: true },
+const santaDetail = Prisma.validator<Prisma.SantaSelect>()({
+  first_name: true,
+  coupled_with_id: true,
+  SantasOnFamilies: {
+    select: {
+      family_id: true,
+      family: {
+        select: {
+          name: true,
+        },
+      },
+    },
+  },
 });
-
-export type SantaInfo = Prisma.SantaGetPayload<typeof santaDetail>;
+export type SantaInfo = Prisma.SantaGetPayload<{
+  select: typeof santaDetail;
+}>;
 
 export default async function GetSantaById(id: string) {
-  const santa = await prisma.santa.findUnique({
+  const santa: SantaInfo | null = await prisma.santa.findUnique({
     where: { id: id },
-    include: { SantasOnFamilies: true },
+    select: santaDetail,
   });
-
-  console.log({ santa });
 
   return santa;
 }

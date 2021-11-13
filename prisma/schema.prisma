@@ -13,6 +13,8 @@ datasource db {
 model Family {
   id               String             @id @default(cuid())
   name             String             @unique @db.VarChar(250)
+  // family_manager_id String
+  // family_manager Santa
   created_at       DateTime           @default(now())
   modified_at      DateTime           @default(now())
   SantasOnFamilies SantasOnFamilies[]
@@ -29,16 +31,16 @@ model Santa {
   created_at        DateTime           @default(now())
   modified_at       DateTime           @default(now())
   coupled_with_id   String?            @unique
-  coupled_with      Santa?             @relation("SantaToSanta", fields: [coupled_with_id], references: [id])
+  coupled_with      Santa?             @relation("SantaToSanta", fields: [coupled_with_id], references: [id], onDelete: SetNull)
   coupler           Santa?             @relation("SantaToSanta")
   Answers           Answer[]
   SantasOnFamilies  SantasOnFamilies[]
 }
 
 model SantasOnFamilies {
-  family    Family   @relation(fields: [family_id], references: [id])
+  family    Family   @relation(fields: [family_id], references: [id], onDelete: Cascade)
   family_id String
-  santa     Santa    @relation(fields: [santa_id], references: [id])
+  santa     Santa    @relation(fields: [santa_id], references: [id], onDelete: Cascade)
   santa_id  String
   joined_at DateTime @default(now())
 
@@ -51,17 +53,17 @@ model Question {
   created_at  DateTime @default(now())
   modified_at DateTime @default(now())
   family_id   String?
-  Family      Family?  @relation(fields: [family_id], references: [id])
+  Family      Family?  @relation(fields: [family_id], references: [id], onDelete: Cascade)
   Answers     Answer[]
 }
 
 model Answer {
   id          Int      @id @default(autoincrement())
   text        String
-  question    Question @relation(fields: [question_id], references: [id])
+  question    Question @relation(fields: [question_id], references: [id], onDelete: Cascade)
   question_id Int
   created_at  DateTime @default(now())
   modified_at DateTime @default(now())
-  santa       Santa    @relation(fields: [santa_id], references: [id])
+  santa       Santa    @relation(fields: [santa_id], references: [id], onDelete: Cascade)
   santa_id    String
 }

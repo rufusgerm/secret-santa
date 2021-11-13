@@ -1,11 +1,10 @@
 import { Prisma } from "@prisma/client";
 import { isValidEmail } from "@shared/utils/email";
-import { NextApiResponse } from "next";
 import router from "next/dist/client/router";
 import { SantaIdOnly } from "pages/api/read/all-santas";
 import { FormEvent, useState } from "react";
 
-export default function Create() {
+export default function CreateSanta() {
   const [fName, setFName] = useState<string>("");
   const [lName, setLName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
@@ -39,41 +38,47 @@ export default function Create() {
 
     const newSanta: SantaIdOnly = (await response.json()) as SantaIdOnly;
 
-    // console.log({ newSanta });
-
     router.push(`${newSanta.id}`);
   };
 
   return (
     <div>
-      <h1>Welcome to the creation screen!</h1>
-      <form onSubmit={handleCreate}>
-        <label>First Name </label>
-        <input
-          type="text"
-          value={fName}
-          onChange={(e) => setFName(e.target.value)}
-          required
-          aria-label="First Name"
-        ></input>
-        <label>Last Name </label>
-        <input
-          type="text"
-          value={lName}
-          onChange={(e) => setLName(e.target.value)}
-          required
-          aria-label="Last Name"
-        />
-        <label>Email </label>
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          aria-label="Email"
-        />
-        <button type="submit">Create</button>
-      </form>
+      <h1>Welcome to the santa creation screen!</h1>
+      <div>
+        <form onSubmit={handleCreate}>
+          <div>
+            <label>First Name </label>
+            <input
+              type="text"
+              value={fName}
+              onChange={(e) => setFName(e.target.value)}
+              required
+              aria-label="First Name"
+            />
+          </div>
+          <div>
+            <label>Last Name </label>
+            <input
+              type="text"
+              value={lName}
+              onChange={(e) => setLName(e.target.value)}
+              required
+              aria-label="Last Name"
+            />
+          </div>
+          <div>
+            <label>Email </label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              aria-label="Email"
+            />
+          </div>
+          <button type="submit">Create</button>
+        </form>
+      </div>
     </div>
   );
 }
