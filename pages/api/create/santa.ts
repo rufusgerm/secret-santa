@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import prisma from "@shared/prisma";
+import prisma from "lib/prisma";
 import { Santa } from ".prisma/client";
-import { generateVerificationCode } from "@shared/utils/verification";
+import { generateVerificationCode } from "lib/utils/verification";
 import { SantaIdOnly } from "../read/all-santas";
 
 export default async function createSanta(

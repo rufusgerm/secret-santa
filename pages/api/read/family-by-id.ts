@@ -1,5 +1,5 @@
 import { Prisma } from ".prisma/client";
-import prisma from "@shared/prisma";
+import prisma from "lib/prisma";
 
 const familyDetail = Prisma.validator<Prisma.FamilySelect>()({
   id: true,

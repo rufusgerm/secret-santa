@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import prisma from "@shared/prisma";
+import prisma from "lib/prisma";
 import { Prisma } from ".prisma/client";
 
 const santaId = Prisma.validator<Prisma.SantaSelect>()({

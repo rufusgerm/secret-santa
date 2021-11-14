@@ -1,5 +1,5 @@
 import { Family, Santa } from ".prisma/client";
-import prisma from "@shared/prisma";
+import prisma from "lib/prisma";
 import { GetServerSideProps } from "next";
 import Link from "next/link";
 
@@ -22,6 +22,13 @@ export default function Home({ familyList }: { familyList: Family[] }) {
       <Link href="s/create" passHref>
         <button>Click Here to Create!</button>
       </Link>
+      <div>
+        <form onSubmit={(e) => false}>
+          <label>Email</label>
+          <input value="" />
+          <button type="submit">Sign In</button>
+        </form>
+      </div>
     </div>
   );
 }

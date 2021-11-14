@@ -13,7 +13,7 @@ else {
   if (!global.prisma) {
     console.log("No prisma instance, creating one...");
     global.prisma = new PrismaClient({
-      rejectOnNotFound: true,
+      // rejectOnNotFound: true,
     });
   } else {
     console.log("It does, grabbing current instance!");
