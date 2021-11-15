@@ -14,7 +14,6 @@ export default function CreateSanta() {
 
     if (!isValidEmail(email)) {
       console.log("Invalid email!");
-      return false;
     }
 
     const santa: Prisma.SantaCreateInput = {
@@ -33,7 +32,6 @@ export default function CreateSanta() {
       console.log(
         `Status ${response.status}-${response.statusText} - ${msg.message}`
       );
-      return false;
     }
 
     const newSanta: SantaIdOnly = (await response.json()) as SantaIdOnly;

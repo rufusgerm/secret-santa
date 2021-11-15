@@ -37,6 +37,5 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 
-# various
-future_packages*
-Todos.txt
+# mics: app features, ideas, etc
+/misc

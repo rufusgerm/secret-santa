@@ -13,8 +13,6 @@ datasource db {
 model Family {
   id               String             @id @default(cuid())
   name             String             @unique @db.VarChar(250)
-  // family_manager_id String
-  // family_manager Santa
   created_at       DateTime           @default(now())
   modified_at      DateTime           @default(now())
   SantasOnFamilies SantasOnFamilies[]
@@ -26,8 +24,6 @@ model Santa {
   first_name        String             @db.VarChar(250)
   last_name         String             @db.VarChar(250)
   email             String             @unique @db.VarChar(250)
-  verification_code String?            @db.VarChar(9)
-  is_active         Boolean            @default(false)
   created_at        DateTime           @default(now())
   modified_at       DateTime           @default(now())
   coupled_with_id   String?            @unique
@@ -37,15 +33,26 @@ model Santa {
   SantasOnFamilies  SantasOnFamilies[]
 }
 
+model TempAccount {
+  id String @id @default(cuid())
+  email String @unique @db.VarChar(250)
+  verification_code String  @db.VarChar(9)
+  did_activate Boolean @default(false)
+  created_at DateTime @default(now())
+  expires_at DateTime @default(dbgenerated("NOW() + INTERVAL 30 MINUTE"))
+}
+
 model SantasOnFamilies {
   family    Family   @relation(fields: [family_id], references: [id], onDelete: Cascade)
   family_id String
   santa     Santa    @relation(fields: [santa_id], references: [id], onDelete: Cascade)
   santa_id  String
+  santa_is_admin Boolean @default(false)
   joined_at DateTime @default(now())
 
   @@id([family_id, santa_id])
 }
+
 
 model Question {
   id          Int      @id @default(autoincrement())

@@ -1,7 +1,10 @@
+import useSanta from "@lib/useSanta";
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
 import Link from "next/link";
 import { SantaIdOnly } from "pages/api/read/all-santas";
 import GetSantaById, { SantaInfo } from "pages/api/read/santa-by-id";
+import { useEffect } from "react";
+import useSWR from "swr";
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const response = await fetch(
@@ -30,6 +33,10 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 };
 
 export default function Santa({ santa }: { santa: SantaInfo | null }) {
+  const { santa: santaData } = useSanta();
+
+  const myPage = santaData?.id == santa?.id;
+
   return (
     <div>
       <h1>{santa?.first_name}</h1>
@@ -47,6 +54,7 @@ export default function Santa({ santa }: { santa: SantaInfo | null }) {
           </ol>
         </div>
       )}
+      {myPage && <h1>My Page</h1>}
     </div>
   );
 }

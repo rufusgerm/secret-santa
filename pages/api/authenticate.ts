@@ -1,22 +1,27 @@
-import { sessionOptions, withSessionRoute } from "@lib/withSession";
+import { sessionOptions, withSessionRoute } from "lib/withSession";
 import { unsealData } from "iron-session";
 import { NextApiRequest, NextApiResponse } from "next";
+import { SantaIdOnly } from "./read/all-santas";
+import useSanta from "@lib/useSanta";
 
 export default withSessionRoute(Authenticate);
 
 async function Authenticate(req: NextApiRequest, res: NextApiResponse) {
   const seal: string = req.query.seal as string;
-  const { santaId } = await unsealData(seal, sessionOptions);
+  const { id } = await unsealData<SantaIdOnly>(seal, sessionOptions);
 
   const santa = await prisma.santa.findFirst({
-    where: { id: santaId as string },
+    where: { id: id as string },
   });
 
+  if (!santa) res.redirect(`/login`);
+
   req.session.santa = {
-    id: santa?.id,
+    id: santa?.id as string,
+    isLoggedIn: true,
   };
 
   await req.session.save();
 
-  res.redirect(`/s/${santa?.id}`);
+  res.json(req.session.santa);
 }

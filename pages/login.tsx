@@ -1,7 +1,9 @@
+import useSanta from "lib/useSanta";
 import { isValidEmail } from "lib/utils/email";
 import { FormEvent, useState } from "react";
 
 export default function Login() {
+  const { santa } = useSanta({ redirectTo: "/s", redirectIfFound: true });
   const [email, setEmail] = useState<string>("");
 
   const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
@@ -24,8 +26,6 @@ export default function Login() {
       );
       return false;
     }
-
-    // router.push(`${newSanta.id}`);
   };
 
   return (

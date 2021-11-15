@@ -26,8 +26,6 @@ export default async function createSanta(
       .status(403)
       .json({ message: "User with that email already exists!" });
 
-  newSanta.verification_code = generateVerificationCode();
-
   const savedSanta: SantaIdOnly = await prisma.santa.create({
     data: newSanta,
     select: {

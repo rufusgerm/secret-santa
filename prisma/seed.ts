@@ -1,4 +1,4 @@
-import prisma from "@lib/prisma";
+import prisma from "../lib/prisma";
 
 const generateVerificationCode = (): string => {
   return String(Math.random()).substring(2, 11);
@@ -12,8 +12,6 @@ async function main() {
       first_name: "Alice",
       last_name: "Bergeron",
       email: "alice@prisma.io",
-      verification_code: generateVerificationCode(),
-      is_active: true,
     },
   });
 
@@ -24,8 +22,6 @@ async function main() {
       email: "bob@prisma.io",
       first_name: "Bob",
       last_name: "Bergeron",
-      verification_code: generateVerificationCode(),
-      is_active: true,
     },
   });
 
@@ -36,8 +32,6 @@ async function main() {
       email: "billy@prisma.io",
       first_name: "Billy",
       last_name: "Flexman",
-      verification_code: generateVerificationCode(),
-      is_active: true,
     },
   });
 
@@ -48,8 +42,6 @@ async function main() {
       email: "jane@prisma.io",
       first_name: "Jane",
       last_name: "Flexman",
-      verification_code: generateVerificationCode(),
-      is_active: true,
     },
   });
 

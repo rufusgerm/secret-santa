@@ -1,4 +1,4 @@
-import { sessionOptions, withSessionRoute } from "@lib/withSession";
+import { sessionOptions, withSessionRoute } from "lib/withSession";
 import { sealData } from "iron-session";
 import prisma from "lib/prisma";
 import { NextApiRequest, NextApiResponse } from "next";
@@ -24,14 +24,14 @@ async function Login(req: NextApiRequest, res: NextApiResponse) {
 
   const seal = await sealData(
     {
-      santaId: santa?.id,
+      id: santa?.id,
     },
     {
       password: sessionOptions.password,
     }
   );
 
-  console.log(`MagicLink: http://localhost:3000/api/authenticate?seal=${seal}`);
+  console.log(`MagicLink: http://localhost:3000/auth?seal=${seal}`);
   //   await sendEmail(
   //     user.email,
   //     "Magic link",

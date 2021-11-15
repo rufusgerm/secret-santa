@@ -2,6 +2,7 @@ import { Prisma } from ".prisma/client";
 import prisma from "lib/prisma";
 
 const santaDetail = Prisma.validator<Prisma.SantaSelect>()({
+  id: true,
   first_name: true,
   coupled_with_id: true,
   SantasOnFamilies: {

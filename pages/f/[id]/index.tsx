@@ -2,6 +2,7 @@ import { GetStaticPaths, GetStaticProps } from "next";
 import Link from "next/link";
 import { FamilyIdOnly } from "pages/api/read/all-families";
 import GetFamilyById, { FamilyInfo } from "pages/api/read/family-by-id";
+import { useState } from "react";
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const allFamilyIds = await fetch(
@@ -33,6 +34,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 };
 
 export default function Family({ family }: { family: FamilyInfo | null }) {
+  const [email, setEmail] = useState<string>("");
   return (
     <div>
       <h1>The {family?.name} Family</h1>
@@ -48,6 +50,19 @@ export default function Family({ family }: { family: FamilyInfo | null }) {
           ))}
         </ol>
       </div>
+      <div>
+        <form>
+          <label>Invite someone to this family</label>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            aria-label="Email"
+          />
+        </form>
+      </div>
+      <button>Send Invite</button>
     </div>
   );
 }
