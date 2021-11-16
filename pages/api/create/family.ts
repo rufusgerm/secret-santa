@@ -1,6 +1,6 @@
 import { Family } from ".prisma/client";
 import { NextApiRequest, NextApiResponse } from "next";
-import { FamilyIdOnly } from "../read/all-families";
+import { FamilyIdOnly } from "../read/family";
 
 export default async function createSanta(
   req: NextApiRequest,

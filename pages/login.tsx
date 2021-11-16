@@ -37,7 +37,7 @@ export default function Login() {
             <label>Email </label>
             <input
               type="email"
-              value={email}
+              defaultValue={email}
               onChange={(e) => setEmail(e.target.value)}
               required
               aria-label="Email"

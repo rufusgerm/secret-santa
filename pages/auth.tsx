@@ -19,7 +19,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 };
 
 export default function Auth({ seal }: { seal: string }) {
-  let { mutateSanta } = useSanta({ redirectIfFound: true });
+  let { mutateSanta } = useSanta({ redirectTo: "/s", redirectIfFound: true });
 
   useEffect(() => {
     async function authSanta() {

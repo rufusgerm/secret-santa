@@ -1,6 +1,6 @@
 import { Prisma } from "@prisma/client";
 import router from "next/dist/client/router";
-import { FamilyIdOnly } from "pages/api/read/all-families";
+import { FamilyIdOnly } from "pages/api/read/family";
 import { FormEvent, useState } from "react";
 
 export default function CreateFamily() {

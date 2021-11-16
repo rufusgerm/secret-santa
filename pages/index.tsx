@@ -25,7 +25,7 @@ export default function Home({ familyList }: { familyList: Family[] }) {
       <div>
         <form onSubmit={(e) => false}>
           <label>Email</label>
-          <input value="" />
+          <input defaultValue="" />
           <button type="submit">Sign In</button>
         </form>
       </div>

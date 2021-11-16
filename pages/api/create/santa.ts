@@ -2,18 +2,19 @@ import { NextApiRequest, NextApiResponse } from "next";
 import prisma from "lib/prisma";
 import { Santa } from ".prisma/client";
 import { generateVerificationCode } from "lib/utils/verification";
-import { SantaIdOnly } from "../read/all-santas";
+import { SantaIdOnly } from "../read/santa";
 
 export default async function createSanta(
   req: NextApiRequest,
   res: NextApiResponse
 ): Promise<SantaIdOnly | void> {
-  if (req.method !== "POST")
+  const { body, method } = req;
+  if (method !== "POST")
     return res
       .status(405)
       .json({ message: "Invalid HTTP Method! Not allowed." });
 
-  const newSanta: Santa = JSON.parse(req.body);
+  const newSanta: Santa = JSON.parse(body);
 
   const checkSanta: Santa | null = await prisma.santa.findUnique({
     where: {

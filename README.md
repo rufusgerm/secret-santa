@@ -10,7 +10,7 @@ Using Prisma as an ORM backed by MySQL
 
 Likely implementations:
 
-- iron-session for: Magic Link auth
+- ~~iron-session for: Magic Link auth~~ :white_check_mark:
+- Material UI (likely) for: aiding my inability to make GUIs look nice
 - cuid for: smaller, unique URL slugs
 - pino/logflare for: ...well, logging
-- Material UI (likely) for: aiding my inability to make GUIs look nice

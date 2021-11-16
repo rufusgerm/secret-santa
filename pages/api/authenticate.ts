@@ -1,8 +1,7 @@
-import { sessionOptions, withSessionRoute } from "lib/withSession";
 import { unsealData } from "iron-session";
+import { sessionOptions, withSessionRoute } from "lib/withSession";
 import { NextApiRequest, NextApiResponse } from "next";
-import { SantaIdOnly } from "./read/all-santas";
-import useSanta from "@lib/useSanta";
+import { SantaIdOnly } from "./read/santa";
 
 export default withSessionRoute(Authenticate);
 

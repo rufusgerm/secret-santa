@@ -1,17 +1,12 @@
 import useSanta from "@lib/useSanta";
-import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
+import { GetStaticPaths, GetStaticProps } from "next";
 import Link from "next/link";
-import { SantaIdOnly } from "pages/api/read/all-santas";
-import GetSantaById, { SantaInfo } from "pages/api/read/santa-by-id";
-import { useEffect } from "react";
-import useSWR from "swr";
+import { SantaIdOnly, SantaInfo } from "pages/api/read/santa";
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_SERVER}/api/read/all-santas`
-  );
-
-  const santas = await response.json();
+  const santas = await fetch(`${process.env.NEXT_PUBLIC_SERVER}/api/read/santa`)
+    .then((r) => r.json())
+    .catch((err) => console.error(err));
 
   const paths = santas.map((s: SantaIdOnly) => ({
     params: { id: s.id },
@@ -19,15 +14,18 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
   return {
     paths,
-    fallback: false,
+    fallback: "blocking",
   };
 };
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const id = params?.id as string;
-  let santa: SantaInfo | null;
 
-  santa = await GetSantaById(id);
+  const santa = await fetch(
+    `${process.env.NEXT_PUBLIC_SERVER}/api/read/santa?id=${id}`
+  )
+    .then((r) => r.json())
+    .catch((err) => console.error(err));
 
   return { props: { santa } };
 };
@@ -35,11 +33,14 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 export default function Santa({ santa }: { santa: SantaInfo | null }) {
   const { santa: santaData } = useSanta();
 
-  const myPage = santaData?.id == santa?.id;
+  const isAuthSantaProfile = santaData?.id == santa?.id;
 
   return (
     <div>
-      <h1>{santa?.first_name}</h1>
+      <div>
+        <h1>{santa?.first_name}</h1>
+        {isAuthSantaProfile && <a>Edit Details</a>}
+      </div>
       <h1>Families</h1>
       {santa?.SantasOnFamilies.length === 0 ? (
         <h3>You don&apos;t have any families yet!</h3>
@@ -54,7 +55,6 @@ export default function Santa({ santa }: { santa: SantaInfo | null }) {
           </ol>
         </div>
       )}
-      {myPage && <h1>My Page</h1>}
     </div>
   );
 }

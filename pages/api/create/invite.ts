@@ -6,12 +6,14 @@ export default async function createSanta(
   req: NextApiRequest,
   res: NextApiResponse
 ): Promise<TempAccount | void> {
-  if (req.method !== "POST")
+  const { body, method } = req;
+
+  if (method !== "POST")
     return res
       .status(405)
       .json({ message: "Invalid HTTP Method! Not allowed." });
 
-  const newInvite: TempAccount = JSON.parse(req.body);
+  const newInvite: TempAccount = JSON.parse(body);
 
   const checkSanta: Santa | null = await prisma.santa.findUnique({
     where: {
@@ -41,11 +43,9 @@ export default async function createSanta(
   });
 
   if (!newTempAcct)
-    return res
-      .status(500)
-      .json({
-        message: "Something went wrong on the server. Please try again later!",
-      });
+    return res.status(500).json({
+      message: "Something went wrong on the server. Please try again later!",
+    });
 
   return res.send({ ok: true });
 }
