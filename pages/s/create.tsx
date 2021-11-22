@@ -1,7 +1,7 @@
+import { SantaIdOnly } from "@lib/types";
 import { Prisma } from "@prisma/client";
 import { isValidEmail } from "lib/utils/email";
 import router from "next/dist/client/router";
-import { SantaIdOnly } from "pages/api/read/all-santas";
 import { FormEvent, useState } from "react";
 
 export default function CreateSanta() {

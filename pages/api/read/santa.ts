@@ -1,37 +1,15 @@
-import { NextApiRequest, NextApiResponse } from "next";
+import {
+  EndpointResponse,
+  santaDetail,
+  santaId,
+  SantaIdOnly,
+  SantaInfo,
+} from "@lib/types";
+import { Santa } from "@prisma/client";
 import prisma from "lib/prisma";
-import { Prisma } from ".prisma/client";
+import { NextApiRequest, NextApiResponse } from "next";
 
-const santaId = Prisma.validator<Prisma.SantaSelect>()({
-  id: true,
-});
-
-export type SantaIdOnly = Prisma.SantaGetPayload<{
-  select: typeof santaId;
-}>;
-
-const santaDetail = Prisma.validator<Prisma.SantaSelect>()({
-  id: true,
-  first_name: true,
-  coupled_with_id: true,
-  SantasOnFamilies: {
-    select: {
-      family_id: true,
-      family: {
-        select: {
-          name: true,
-        },
-      },
-      santa_is_admin: true,
-    },
-  },
-});
-
-export type SantaInfo = Prisma.SantaGetPayload<{
-  select: typeof santaDetail;
-}>;
-
-export default async function AllSantaIds(
+export default async function GetSanta(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
@@ -39,24 +17,57 @@ export default async function AllSantaIds(
     query: { id },
     method,
   } = req;
+
+  let response: EndpointResponse<SantaInfo, SantaIdOnly[], Santa> = {
+    status: 500,
+    payload: "Something went wrong on the server. Please try again later!",
+  };
+
   if (method !== "GET")
-    return res
-      .status(405)
-      .json({ message: "Invalid HTTP Method! Not allowed." });
+    response = {
+      status: 405,
+      payload: "Invalid HTTP Method! Not allowed.",
+    };
 
-  if (id) res.json(await santa(id as string));
+  if (id) {
+    const santa: SantaInfo | null = await santaById(id as string);
 
-  if (!id) res.json(await santas());
+    if (!santa)
+      response = {
+        status: 404,
+        payload: "Santa with that Id not found!",
+      };
+
+    response = {
+      status: 200,
+      payload: santa!,
+    };
+  }
+
+  if (!id) {
+    const santas = await santasAll();
+    if (!santas)
+      response = {
+        status: 500,
+        payload: "Something went wrong on the server. Please try again later!",
+      };
+    response = {
+      status: 200,
+      payload: santas,
+    };
+  }
+
+  return res.status(response.status).json(response.payload);
 }
 
-const santa = async (id: string): Promise<SantaInfo | null> => {
+const santaById = async (id: string): Promise<SantaInfo | null> => {
   return await prisma.santa.findUnique({
     where: { id: id },
     select: santaDetail,
   });
 };
 
-const santas = async (): Promise<SantaIdOnly[]> => {
+const santasAll = async (): Promise<SantaIdOnly[]> => {
   return await prisma.santa.findMany({
     select: santaId,
   });

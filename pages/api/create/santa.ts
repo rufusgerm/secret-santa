@@ -1,18 +1,24 @@
-import { NextApiRequest, NextApiResponse } from "next";
-import prisma from "lib/prisma";
 import { Santa } from ".prisma/client";
-import { generateVerificationCode } from "lib/utils/verification";
-import { SantaIdOnly } from "../read/santa";
+import { santaId, SantaIdOnly } from "@lib/types";
+import prisma from "lib/prisma";
+import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function createSanta(
   req: NextApiRequest,
-  res: NextApiResponse
-): Promise<SantaIdOnly | void> {
+  res: NextApiResponse<SantaIdOnly | string>
+) {
   const { body, method } = req;
+
+  let response: { status: number; payload: SantaIdOnly | string } = {
+    status: 500,
+    payload: "Something went wrong on the server. Please try again later!",
+  };
+
   if (method !== "POST")
-    return res
-      .status(405)
-      .json({ message: "Invalid HTTP Method! Not allowed." });
+    response = {
+      status: 405,
+      payload: "Invalid HTTP Method! Not allowed.",
+    };
 
   const newSanta: Santa = JSON.parse(body);
 
@@ -23,16 +29,17 @@ export default async function createSanta(
   });
 
   if (checkSanta)
-    return res
-      .status(403)
-      .json({ message: "User with that email already exists!" });
+    response = {
+      status: 403,
+      payload: "User with that email already exists!",
+    };
 
   const savedSanta: SantaIdOnly = await prisma.santa.create({
     data: newSanta,
-    select: {
-      id: true,
-    },
+    select: santaId,
   });
 
-  res.json(savedSanta);
+  if (savedSanta) response = { status: 200, payload: savedSanta };
+
+  return res.status(response.status).json(response.payload);
 }

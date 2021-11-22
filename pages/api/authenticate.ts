@@ -1,7 +1,7 @@
+import { SantaIdOnly } from "@lib/types";
 import { unsealData } from "iron-session";
 import { sessionOptions, withSessionRoute } from "lib/withSession";
 import { NextApiRequest, NextApiResponse } from "next";
-import { SantaIdOnly } from "./read/santa";
 
 export default withSessionRoute(Authenticate);
 
@@ -16,7 +16,9 @@ async function Authenticate(req: NextApiRequest, res: NextApiResponse) {
   if (!santa) res.redirect(`/login`);
 
   req.session.santa = {
-    id: santa?.id as string,
+    id: santa!.id,
+    first_name: santa!.first_name,
+    last_name: santa!.last_name,
     isLoggedIn: true,
   };
 

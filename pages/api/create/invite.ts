@@ -2,16 +2,23 @@ import { Santa, TempAccount } from ".prisma/client";
 import prisma from "lib/prisma";
 import { NextApiRequest, NextApiResponse } from "next";
 
-export default async function createSanta(
+export default async function createInvite(
   req: NextApiRequest,
-  res: NextApiResponse
-): Promise<TempAccount | void> {
+  res: NextApiResponse<TempAccount | string>
+) {
   const { body, method } = req;
 
+  // Assume the worst!
+  let response: { status: number; payload: TempAccount | string } = {
+    status: 500,
+    payload: "Something went wrong on the server. Please try again later!",
+  };
+
   if (method !== "POST")
-    return res
-      .status(405)
-      .json({ message: "Invalid HTTP Method! Not allowed." });
+    response = {
+      status: 405,
+      payload: "Invalid HTTP Method! Not allowed.",
+    };
 
   const newInvite: TempAccount = JSON.parse(body);
 
@@ -22,9 +29,10 @@ export default async function createSanta(
   });
 
   if (checkSanta)
-    return res
-      .status(403)
-      .json({ message: "User with that email already exists!" });
+    response = {
+      status: 403,
+      payload: "User with that email already exists!",
+    };
 
   const checkTempAccount: TempAccount | null =
     await prisma.tempAccount.findUnique({
@@ -34,18 +42,20 @@ export default async function createSanta(
     });
 
   if (checkTempAccount)
-    return res
-      .status(403)
-      .json({ message: "User with that email already exists!" });
+    response = {
+      status: 403,
+      payload: "User with that email already exists!",
+    };
 
   const newTempAcct: TempAccount = await prisma.tempAccount.create({
     data: newInvite,
   });
 
-  if (!newTempAcct)
-    return res.status(500).json({
-      message: "Something went wrong on the server. Please try again later!",
-    });
+  if (newTempAcct)
+    response = {
+      status: 200,
+      payload: newTempAcct,
+    };
 
-  return res.send({ ok: true });
+  return res.status(response.status).json(response.payload);
 }

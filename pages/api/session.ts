@@ -3,6 +3,8 @@ import { NextApiRequest, NextApiResponse } from "next";
 
 export type SantaSession = {
   id: string;
+  first_name: string;
+  last_name: string;
   isLoggedIn: boolean;
 };
 
@@ -21,6 +23,8 @@ async function Session(
   } else {
     res.json({
       id: "",
+      first_name: "",
+      last_name: "",
       isLoggedIn: false,
     });
   }

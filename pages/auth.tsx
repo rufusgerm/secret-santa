@@ -1,4 +1,4 @@
-import useSanta from "@lib/useSanta";
+import useSanta from "@lib/hooks/useSanta";
 import { GetServerSideProps } from "next";
 import { useEffect } from "react";
 

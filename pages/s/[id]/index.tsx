@@ -1,7 +1,7 @@
-import useSanta from "@lib/useSanta";
+import useSanta from "@lib/hooks/useSanta";
+import { SantaIdOnly, SantaInfo } from "@lib/types";
 import { GetStaticPaths, GetStaticProps } from "next";
 import Link from "next/link";
-import { SantaIdOnly, SantaInfo } from "pages/api/read/santa";
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const santas = await fetch(`${process.env.NEXT_PUBLIC_SERVER}/api/read/santa`)
@@ -36,25 +36,49 @@ export default function Santa({ santa }: { santa: SantaInfo | null }) {
   const isAuthSantaProfile = santaData?.id == santa?.id;
 
   return (
-    <div>
-      <div>
-        <h1>{santa?.first_name}</h1>
-        {isAuthSantaProfile && <a>Edit Details</a>}
+    <div
+      style={{
+        color: "blue",
+        display: "flex",
+        flexDirection: "column",
+        width: "100%",
+      }}
+    >
+      <div
+        style={{
+          margin: "auto",
+          width: "33%",
+        }}
+      >
+        <h1 style={{ textAlign: "center" }}>{santa?.first_name}</h1>
+        {isAuthSantaProfile && (
+          <h3 style={{ textAlign: "center" }}>Edit Details</h3>
+        )}
       </div>
-      <h1>Families</h1>
-      {santa?.SantasOnFamilies.length === 0 ? (
-        <h3>You don&apos;t have any families yet!</h3>
-      ) : (
-        <div>
-          <ol>
-            {santa?.SantasOnFamilies.map((f) => (
-              <li key={`${f.family_id}`}>
-                <Link href={`/f/${f.family_id}`}>{f.family.name}</Link>
-              </li>
-            ))}
-          </ol>
-        </div>
-      )}
+      <div
+        style={{
+          margin: "auto",
+          width: "33%",
+          alignItems: "center",
+        }}
+      >
+        <h1 style={{ textAlign: "center" }}>Families</h1>
+        {santa?.SantasOnFamilies.length === 0 ? (
+          <h3 style={{ textAlign: "center" }}>
+            You don&apos;t have any families yet!
+          </h3>
+        ) : (
+          <div style={{ alignItems: "center" }}>
+            <ol>
+              {santa?.SantasOnFamilies.map((f) => (
+                <li key={`${f.family_id}`}>
+                  <Link href={`/f/${f.family_id}`}>{f.family.name}</Link>
+                </li>
+              ))}
+            </ol>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

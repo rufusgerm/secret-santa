@@ -3,16 +3,18 @@ import Router from "next/router";
 import useSWR from "swr";
 import { SantaSession } from "pages/api/session";
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
+export const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export default function useSanta({
   redirectTo = "",
   redirectIfFound = false,
 } = {}) {
-  const { data: santa, mutate: mutateSanta } = useSWR<SantaSession>(
-    "/api/session",
-    fetcher
-  );
+  const {
+    data: santa,
+    error,
+    mutate: mutateSanta,
+  } = useSWR<SantaSession>("/api/session", fetcher);
+  const isLoading = !santa && !error;
   useEffect(() => {
     // if no redirect needed, just return (example: already on /dashboard)
     // if santa data not yet there (fetch in progress, logged in or not) then don't do anything yet
@@ -31,5 +33,5 @@ export default function useSanta({
     // }
   }, [santa, redirectIfFound, redirectTo]);
 
-  return { santa, mutateSanta };
+  return { santa, isLoading, mutateSanta };
 }

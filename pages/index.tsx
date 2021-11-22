@@ -1,4 +1,4 @@
-import { Family, Santa } from ".prisma/client";
+import { Family } from ".prisma/client";
 import prisma from "lib/prisma";
 import { GetServerSideProps } from "next";
 import Link from "next/link";

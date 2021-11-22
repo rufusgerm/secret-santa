@@ -1,37 +1,8 @@
-import { NextApiRequest, NextApiResponse } from "next";
+import { FamilyInfo, familyDetail, FamilyIdOnly, familyId } from "@lib/types";
 import prisma from "lib/prisma";
-import { Prisma } from ".prisma/client";
+import { NextApiRequest, NextApiResponse } from "next";
 
-const familyId = Prisma.validator<Prisma.FamilySelect>()({
-  id: true,
-});
-
-export type FamilyIdOnly = Prisma.SantaGetPayload<{
-  select: typeof familyId;
-}>;
-
-const familyDetail = Prisma.validator<Prisma.FamilySelect>()({
-  id: true,
-  name: true,
-  SantasOnFamilies: {
-    select: {
-      santa_id: true,
-      santa: {
-        select: {
-          first_name: true,
-          last_name: true,
-        },
-      },
-      santa_is_admin: true,
-    },
-  },
-});
-
-export type FamilyInfo = Prisma.FamilyGetPayload<{
-  select: typeof familyDetail;
-}>;
-
-export default async function Family(
+export default async function GetFamily(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
@@ -45,19 +16,23 @@ export default async function Family(
       .status(405)
       .json({ message: "Invalid HTTP Method! Not allowed." });
 
-  if (id) res.json(await family(id as string));
+  if (id) return res.json(await getFamilyById(id as string));
 
-  if (!id) res.json(await families());
+  if (!id) return res.json(await getFamilies());
 }
 
-const family = async (id: string): Promise<FamilyInfo | null> => {
+const getFamilyById = async (id: string): Promise<FamilyInfo | null> => {
+  // TODO: This isn't handled right. There is no check for null; the user
+  // should know that the family id didn't return a record
   return await prisma.family.findUnique({
     where: { id: id },
     select: familyDetail,
   });
 };
 
-const families = async (): Promise<FamilyIdOnly[]> => {
+const getFamilies = async (): Promise<FamilyIdOnly[]> => {
+  // TODO: This isn't handled right. There is no check for an empty array (i.e. no records found);
+  // the user should know that no records were found
   return await prisma.family.findMany({
     select: familyId,
   });

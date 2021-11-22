@@ -1,15 +1,16 @@
 import { Prisma } from ".prisma/client";
-import useSanta from "@lib/useSanta";
-import { isValidEmail } from "@lib/utils/email";
-import { generateVerificationCode } from "@lib/utils/verification";
+import useSanta, { fetcher } from "@lib/hooks/useSanta";
+import { FamilyIdOnly, FamilyInfo, QuestionInfo } from "@lib/types";
+import FamilyList from "components/FamilyList";
+import InviteForm from "components/Invite";
+import QuestionList from "components/QuestionList";
 import { GetStaticPaths, GetStaticProps } from "next";
-import Link from "next/link";
-import { FamilyIdOnly, FamilyInfo } from "pages/api/read/family";
-import { FormEvent, useState } from "react";
+import React, { FormEvent, useState } from "react";
+import useSWR from "swr";
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const allFamilyIds = (await fetch(
-    `${process.env.NEXT_PUBLIC_SERVER}/api/read/family`
+    `${process.env.NEXT_PUBLIC_ABS_API_READ}/family`
   )
     .then((r) => r.json())
     .catch((err) => console.error(err))) as FamilyIdOnly[];
@@ -26,10 +27,9 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const id = params?.id as string;
-  let family: FamilyInfo | null;
 
-  family = await fetch(
-    `${process.env.NEXT_PUBLIC_SERVER}/api/read/family?id=${id}`
+  let family: FamilyInfo | null = await fetch(
+    `${process.env.NEXT_PUBLIC_ABS_API_READ}/family?id=${id}`
   )
     .then((r) => r.json())
     .catch((err) => console.error(err));
@@ -38,75 +38,144 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 };
 
 export default function Family({ family }: { family: FamilyInfo | null }) {
-  const { santa } = useSanta();
-  const [email, setEmail] = useState<string>("");
+  const { santa, isLoading } = useSanta();
+  const { data: questions, mutate } = useSWR<QuestionInfo[]>(
+    `/api/read/question?familyId=${family?.id}`,
+    fetcher
+  );
+  const [menuItem, setMenuItem] = useState<boolean>(false);
 
-  const { isFamilyMember, isMemberAdmin } = santaOnFamily(
+  const { isViewerFamily, isViewerAdmin } = santaOnFamily(
     santa?.id as string,
     family
   );
 
-  const handleInvite = async (e: FormEvent<HTMLFormElement>) => {
+  const handleQAdd = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!isValidEmail(email)) console.log("Invalid email!");
+    const questionText = (
+      e.currentTarget.elements.namedItem("question") as HTMLInputElement
+    ).value;
 
-    const tempAcct: Prisma.TempAccountCreateInput = {
-      email: email,
-      verification_code: generateVerificationCode(),
+    if (!questionText) return false;
+
+    const newQuestion: Prisma.QuestionUncheckedCreateInput = {
+      text: questionText,
+      family_id: family!.id,
     };
+
+    const savedQuestion = await fetch("/api/create/question", {
+      method: "POST",
+      body: JSON.stringify(newQuestion),
+    })
+      .then((r) => r.json())
+      .catch((err) => console.error(err));
+
+    if (savedQuestion) mutate();
   };
 
   return (
-    <div>
-      <h1>The {family?.name} Family</h1>
-      {isFamilyMember ? (
-        <div>
-          {isMemberAdmin && <h1>edit</h1>}
-          <div>
-            <ol>
-              {family?.SantasOnFamilies.map((s) => {
-                return (
-                  <li key={`${s.santa_id}`}>
-                    <Link href={`/s/${s.santa_id}`}>
-                      {`${s.santa.first_name} ${s.santa.last_name}`}
-                    </Link>
-                  </li>
-                );
-              })}
-            </ol>
-          </div>
-          <div>
-            <form onSubmit={handleInvite}>
-              <label>Invite someone to this family</label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                aria-label="Email"
-              />
-            </form>
-          </div>
-          <button>Send Invite</button>
+    !isLoading && (
+      <div>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+          }}
+          className="justify-content-center"
+        >
+          <h1>The {family?.name} Family</h1>{" "}
+          {isViewerAdmin && (
+            <h1
+              style={{
+                marginLeft: "1rem",
+                marginTop: "0.5rem",
+                color: "black",
+                border: "1px solid black",
+                width: "2rem",
+                height: "2rem",
+                lineHeight: "2rem",
+                textAlign: "center",
+                borderRadius: "50%",
+              }}
+            >
+              {" "}
+              i{" "}
+            </h1>
+          )}
         </div>
-      ) : (
-        <div>
-          <h1>Sorry! You&apos;re not a part of this family yet!</h1>
-        </div>
-      )}
-    </div>
+        {isViewerFamily ? (
+          <div className="justify-content-center">
+            <InviteForm />
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "row",
+              }}
+              className="justify-content-center"
+            >
+              <h1
+                style={{
+                  margin: "2rem",
+                  color: !menuItem ? "blue" : "black",
+                }}
+                onClick={(e) => setMenuItem(false)}
+              >
+                Members
+              </h1>
+              <h1
+                style={{
+                  margin: "2rem",
+                  color: menuItem ? "blue" : "black",
+                }}
+                onClick={(e) => setMenuItem(true)}
+              >
+                Questions
+              </h1>
+            </div>
+            <div>
+              {!menuItem ? (
+                <FamilyList
+                  familyMembers={family!.SantasOnFamilies.filter(
+                    (s) => s.santa_id != santa?.id
+                  )}
+                  isViewerAdmin={isViewerAdmin}
+                />
+              ) : (
+                <div>
+                  <QuestionList questions={questions!} />
+                  {isViewerAdmin && <AddQuestion addQHandler={handleQAdd} />}
+                </div>
+              )}
+            </div>
+          </div>
+        ) : (
+          <div>
+            <h1>Sorry! You&apos;re not a part of this family yet!</h1>
+          </div>
+        )}
+      </div>
+    )
   );
 }
 
 const santaOnFamily = (
   id: string,
   family: FamilyInfo | null
-): { isFamilyMember: boolean; isMemberAdmin: boolean } => {
+): { isViewerFamily: boolean; isViewerAdmin: boolean } => {
   const santa = family?.SantasOnFamilies.find((s) => s.santa_id == id);
-  let isFamilyMember = !!santa;
+  let isViewerFamily = !!santa;
 
-  let isMemberAdmin = isFamilyMember && !!santa?.santa_is_admin;
+  let isViewerAdmin = isViewerFamily && !!santa?.santa_is_admin;
 
-  return { isFamilyMember, isMemberAdmin };
+  return { isViewerFamily, isViewerAdmin };
+};
+
+const AddQuestion = ({ addQHandler }: { addQHandler: any }): JSX.Element => {
+  return (
+    <form onSubmit={addQHandler}>
+      <input name="question" type="text" />
+      <button>Add Question</button>
+    </form>
+  );
 };

@@ -1,8 +1,8 @@
 import { Family } from ".prisma/client";
+import { FamilyIdOnly } from "@lib/types";
 import { NextApiRequest, NextApiResponse } from "next";
-import { FamilyIdOnly } from "../read/family";
 
-export default async function createSanta(
+export default async function createFamily(
   req: NextApiRequest,
   res: NextApiResponse
 ): Promise<FamilyIdOnly | void> {
@@ -31,5 +31,9 @@ export default async function createSanta(
     },
   });
 
-  res.json(savedFamily);
+  if (savedFamily) res.status(200).json(savedFamily);
+
+  return res.status(500).json({
+    message: "Something went wrong on the server. Please try again later!",
+  });
 }
