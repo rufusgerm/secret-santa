@@ -1,6 +1,6 @@
 import { Prisma } from ".prisma/client";
 import { generateVerificationCode } from "@lib/utils/verification";
-import React from "react";
+import Navbar from "components/Navbar";
 
 export default function TestingPage() {
   const testRoute = async (e: any) => {
@@ -20,5 +20,6 @@ export default function TestingPage() {
     <div>
       <button onClick={testRoute}>Test Api Route</button>
     </div>
+    // <Navbar />
   );
 }

@@ -6,9 +6,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const { santa, isLoading } = useSanta();
   return (
     <>
-      {!isLoading && (
-        <NavBar isLoggedIn={santa?.isLoggedIn} santaName={santa?.first_name} />
-      )}
+      {!isLoading && <NavBar />}
       <main>{children}</main>
     </>
   );
