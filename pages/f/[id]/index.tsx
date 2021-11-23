@@ -1,7 +1,10 @@
 import { Prisma } from ".prisma/client";
 import useSanta, { fetcher } from "@lib/hooks/useSanta";
 import { FamilyIdOnly, FamilyInfo, QuestionInfo } from "@lib/types";
-import FamilyList from "components/FamilyList";
+import FamilyList, {
+  FamilyMember,
+  FamilyMemberAnswers,
+} from "components/FamilyList";
 import InviteForm from "components/Invite";
 import QuestionList from "components/QuestionList";
 import { GetStaticPaths, GetStaticProps } from "next";
@@ -43,6 +46,8 @@ export default function Family({ family }: { family: FamilyInfo | null }) {
     `/api/read/question?familyId=${family?.id}`,
     fetcher
   );
+
+  console.log(family);
   const [menuItem, setMenuItem] = useState<boolean>(false);
 
   const { isViewerFamily, isViewerAdmin } = santaOnFamily(
@@ -135,12 +140,40 @@ export default function Family({ family }: { family: FamilyInfo | null }) {
             </div>
             <div>
               {!menuItem ? (
-                <FamilyList
-                  familyMembers={family!.SantasOnFamilies.filter(
-                    (s) => s.santa_id != santa?.id
-                  )}
-                  isViewerAdmin={isViewerAdmin}
-                />
+                <FamilyList>
+                  {family!.SantasOnFamilies.filter(
+                    (s) => s.santa_id !== santa?.id
+                  ).map((s, idx) => {
+                    return (
+                      <FamilyMember
+                        key={s.santa_id}
+                        id={s.santa_id}
+                        firstName={s.santa.first_name}
+                        lastName={s.santa.last_name}
+                        isViewerAdmin={isViewerAdmin}
+                      >
+                        {family?.Questions.map((q, idx) => {
+                          const answer = s.santa.Answers.find(
+                            (a) => a.question_id === q.id
+                          );
+                          return (
+                            <FamilyMemberAnswers
+                              key={`${s.santa_id}-${q.id}`}
+                              question={q.text}
+                              answer={
+                                answer?.text ||
+                                `${s.santa.first_name} has not answered that question yet!`
+                              }
+                              rowColor={
+                                idx % 2 === 0 ? "bg-gray-50" : "bg-white"
+                              }
+                            />
+                          );
+                        })}
+                      </FamilyMember>
+                    );
+                  })}
+                </FamilyList>
               ) : (
                 <div>
                   <QuestionList questions={questions!} />

@@ -3,7 +3,7 @@ import React from "react";
 import NavBar from "./Navbar";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  const { santa, isLoading } = useSanta();
+  const { isLoading } = useSanta();
   return (
     <>
       {!isLoading && <NavBar />}

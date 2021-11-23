@@ -72,7 +72,7 @@ export default function Navbar() {
                     <Menu.Items className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
                       <Menu.Item>
                         {({ active }) => (
-                          <Link href="/">
+                          <Link href={`/s/${santa?.id}`}>
                             <a
                               className={classNames(
                                 active ? "bg-gray-100" : "",
