@@ -25,7 +25,7 @@ export default function useSanta({
       (redirectTo && !redirectIfFound && !santa?.isLoggedIn) ||
       (redirectIfFound && santa?.isLoggedIn)
     ) {
-      Router.push(`${redirectTo}/${santa.id}`);
+      Router.push(`${redirectTo}/${santa.id}/h`);
     }
     // if (redirectIfFound && santa?.isLoggedIn && redirectTo) {
     //   console.log(`Found...redirecting to...${redirectTo}/${santa.id}`);

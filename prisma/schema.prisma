@@ -13,6 +13,7 @@ datasource db {
 model Family {
   id               String             @id @default(cuid())
   name             String             @unique @db.VarChar(250)
+  rules            String?            @db.Text
   created_at       DateTime           @default(now())
   modified_at      DateTime           @default(now())
   SantasOnFamilies SantasOnFamilies[]

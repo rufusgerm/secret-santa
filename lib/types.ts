@@ -58,6 +58,7 @@ export const santaOnFamily = {
 export const familyDetail = Prisma.validator<Prisma.FamilySelect>()({
   id: true,
   name: true,
+  rules: true,
   Questions: {
     select: {
       id: true,

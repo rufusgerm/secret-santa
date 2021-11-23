@@ -1,10 +1,12 @@
 import { Prisma } from ".prisma/client";
+import { InformationCircleIcon } from "@heroicons/react/solid";
 import useSanta, { fetcher } from "@lib/hooks/useSanta";
 import { FamilyIdOnly, FamilyInfo, QuestionInfo } from "@lib/types";
 import FamilyList, {
   FamilyMember,
   FamilyMemberAnswers,
 } from "components/FamilyList";
+import { FamilyRules } from "components/FamilyRules";
 import InviteForm from "components/Invite";
 import QuestionList from "components/QuestionList";
 import { GetStaticPaths, GetStaticProps } from "next";
@@ -47,7 +49,6 @@ export default function Family({ family }: { family: FamilyInfo | null }) {
     fetcher
   );
 
-  console.log(family);
   const [menuItem, setMenuItem] = useState<boolean>(false);
 
   const { isViewerFamily, isViewerAdmin } = santaOnFamily(
@@ -81,65 +82,55 @@ export default function Family({ family }: { family: FamilyInfo | null }) {
 
   return (
     !isLoading && (
-      <div>
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "row",
-          }}
-          className="justify-content-center"
-        >
-          <h1>The {family?.name} Family</h1>{" "}
-          {isViewerAdmin && (
-            <h1
-              style={{
-                marginLeft: "1rem",
-                marginTop: "0.5rem",
-                color: "black",
-                border: "1px solid black",
-                width: "2rem",
-                height: "2rem",
-                lineHeight: "2rem",
-                textAlign: "center",
-                borderRadius: "50%",
-              }}
-            >
-              {" "}
-              i{" "}
-            </h1>
-          )}
+      <div className="flex flex-col my-2">
+        <div className="mt-2 flex flex-row justify-center">
+          <h1 className="w-full flex flex-row justify-center text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl">
+            <span className="flex flex-row">
+              The {family?.name} Family{" "}
+              {isViewerAdmin && (
+                <InformationCircleIcon className="my-auto mx-4 w-8 h-8" />
+              )}
+            </span>
+          </h1>
         </div>
         {isViewerFamily ? (
-          <div className="justify-content-center">
-            <InviteForm />
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-              }}
-              className="justify-content-center"
-            >
-              <h1
-                style={{
-                  margin: "2rem",
-                  color: !menuItem ? "blue" : "black",
-                }}
-                onClick={(e) => setMenuItem(false)}
-              >
-                Members
-              </h1>
-              <h1
-                style={{
-                  margin: "2rem",
-                  color: menuItem ? "blue" : "black",
-                }}
-                onClick={(e) => setMenuItem(true)}
-              >
-                Questions
-              </h1>
+          <div className="">
+            <div className="mt-6 mb-2 flex justify-center">
+              <div className="mt-8 flex justify-evenly w-1/2 lg:mt-0 lg:flex-shrink-0">
+                <div className="inline-flex rounded-md shadow">
+                  <a
+                    onClick={(e) => setMenuItem(false)}
+                    className={`inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md cursor-pointer ${
+                      !menuItem
+                        ? "text-white bg-[#146B3A] hover:bg-[#165B33]"
+                        : 'text-[#146B3A] bg-white hover:bg-gray-100"'
+                    } `}
+                  >
+                    Family Rules
+                  </a>
+                </div>
+                <div className="ml-3 inline-flex rounded-md shadow">
+                  <a
+                    onClick={(e) => setMenuItem(true)}
+                    className={`inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white cursor-pointer ${
+                      menuItem
+                        ? "text-white bg-[#146B3A] hover:bg-[#165B33]"
+                        : 'text-[#146B3A] bg-white hover:bg-gray-100"'
+                    } `}
+                  >
+                    Members
+                  </a>
+                </div>
+              </div>
             </div>
             <div>
               {!menuItem ? (
+                <FamilyRules>
+                  {family?.rules && family.rules.length > 0
+                    ? family?.rules
+                    : `The ${family?.name} family hasn't set their rules yet!`}
+                </FamilyRules>
+              ) : (
                 <FamilyList>
                   {family!.SantasOnFamilies.filter(
                     (s) => s.santa_id !== santa?.id
@@ -174,13 +165,9 @@ export default function Family({ family }: { family: FamilyInfo | null }) {
                     );
                   })}
                 </FamilyList>
-              ) : (
-                <div>
-                  <QuestionList questions={questions!} />
-                  {isViewerAdmin && <AddQuestion addQHandler={handleQAdd} />}
-                </div>
               )}
             </div>
+            <InviteForm />
           </div>
         ) : (
           <div>
