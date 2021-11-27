@@ -50,6 +50,7 @@ async function main() {
     update: {},
     create: {
       name: "Bergeron",
+      rules: "These are the rules, y'all",
     },
   });
 
@@ -58,6 +59,7 @@ async function main() {
     update: {},
     create: {
       name: "Flexman",
+      rules: "We don't have any rules. Sorry!",
     },
   });
 

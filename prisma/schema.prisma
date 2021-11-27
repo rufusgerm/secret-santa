@@ -16,6 +16,7 @@ model Family {
   rules            String?            @db.Text
   created_at       DateTime           @default(now())
   modified_at      DateTime           @default(now())
+  TempAccounts TempAccount[]
   SantasOnFamilies SantasOnFamilies[]
   Questions        Question[]
 }
@@ -38,9 +39,10 @@ model TempAccount {
   id                String   @id @default(cuid())
   email             String   @unique @db.VarChar(250)
   verification_code String   @db.VarChar(9)
+  invite_via_family_id String
+  family Family @relation(fields: [invite_via_family_id], references: [id], onDelete: Cascade)
   did_activate      Boolean  @default(false)
   created_at        DateTime @default(now())
-  expires_at        DateTime @default(dbgenerated("NOW() + INTERVAL 30 MINUTE"))
 }
 
 model SantasOnFamilies {

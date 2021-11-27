@@ -1,73 +1,46 @@
-type FamilyListProps = {
-  familyMembers: SantaInFamily[];
-  isViewerAdmin: boolean;
-};
+import { ExternalLinkIcon } from "@heroicons/react/outline";
+import Link from "next/link";
 
-type SantaInFamily = {
-  santa: {
-    first_name: string;
-    last_name: string;
-  };
-  santa_id: string;
-  santa_is_admin: boolean;
-};
-
-const FamilyList = ({ children }: { children: any }): JSX.Element => {
+export const FamilyList = ({
+  children,
+}: {
+  children: React.ReactNode;
+}): JSX.Element => {
   return (
-    <div className="w-full flex flex-col xl:flex-row flex-wrap content-center xl:justify-center">
+    <div className="w-full flex flex-col">
+      <h1 className="text-4xl font-bold my-2 ml-4">Families</h1>
       {children}
     </div>
   );
 };
 
-type FamilyMemberProps = {
-  id: string;
-  firstName: string;
-  lastName: string;
-  isViewerAdmin: boolean;
-  children: React.ReactNode;
-};
-
-export const FamilyMember = ({
-  id,
-  firstName,
-  lastName,
-  isViewerAdmin,
-  children,
-}: FamilyMemberProps): JSX.Element => {
+export const FamilyListCard = ({
+  santaId,
+  family,
+  handleClick,
+}: {
+  santaId: string;
+  family: {
+    id: string;
+    name: string;
+  };
+  handleClick: (id: string, name: string) => void;
+}) => {
   return (
-    <div className="bg-white m-2 w-3/4 lg:w-1/2 xl:w-1/3 shadow overflow-scroll rounded-lg">
-      <div className="px-4 py-5 sm:px-6">
-        <h3 className="text-lg leading-6 font-medium text-gray-900">{`${firstName} ${lastName}`}</h3>
-      </div>
-      <div className="border-t border-gray-200">
-        <dl>{children}</dl>
+    <div className="bg-white m-2 w-2/3 h-16  shadow rounded-lg">
+      <div className="h-full w-full flex flex-row overflow-hidden">
+        <h3
+          onClick={() => handleClick(family.id, family.name)}
+          className="flex flex-col justify-center pl-4 text-lg h-full w-2/3 leading-6 font-medium text-gray-900 bg-gray-200 cursor-pointer hover:bg-gray-100 rounded-l-lg"
+        >
+          {family.name}
+        </h3>
+        <Link passHref href={`/f/${family.id}`}>
+          <div className="flex flex-col m-auto  cursor-pointer">
+            <ExternalLinkIcon className="w-8 h-8 text-[#165B33] hover:text-[#7C9F61] rounded-md" />
+          </div>
+        </Link>
       </div>
     </div>
   );
 };
-
-type FamilyMemberAnswersProps = {
-  question: string;
-  answer: string;
-  rowColor: "bg-gray-50" | "bg-white";
-};
-
-export const FamilyMemberAnswers = ({
-  question,
-  answer,
-  rowColor,
-}: FamilyMemberAnswersProps): JSX.Element => {
-  return (
-    <div
-      className={`${rowColor} px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6`}
-    >
-      <dt className="text-sm font-medium text-gray-500">{question}</dt>
-      <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-        {answer}
-      </dd>
-    </div>
-  );
-};
-
-export default FamilyList;

@@ -1,3 +1,4 @@
+import { IronSessionOptions } from "iron-session";
 import { withIronSessionApiRoute, withIronSessionSsr } from "iron-session/next";
 import {
   GetServerSidePropsContext,
@@ -5,7 +6,7 @@ import {
   NextApiHandler,
 } from "next";
 
-export const sessionOptions = {
+export const sessionOptions: IronSessionOptions = {
   cookieName: "S_SESSION",
   password:
     process.env.SESSION_KEY || "complex_password_at_least_32_characters_long",

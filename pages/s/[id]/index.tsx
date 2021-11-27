@@ -1,7 +1,17 @@
-import useSanta from "@lib/hooks/useSanta";
-import { SantaIdOnly, SantaInfo } from "@lib/types";
+import { Answer, Prisma } from ".prisma/client";
+import { PencilIcon } from "@heroicons/react/outline";
+import useSanta, { fetcher } from "@lib/hooks/useSanta";
+import { AnswerInfo, SantaIdOnly, SantaInfo } from "@lib/types";
+import { isValidObject } from "@lib/utils/validationCheckers";
+import { FamilyList, FamilyListCard } from "components/FamilyList";
+import {
+  EmptyQuestionAnswerListCard,
+  QuestionAnswerListCard,
+  QuestionAnswerListItem,
+} from "components/QuestionAnswerList";
 import { GetStaticPaths, GetStaticProps } from "next";
-import Link from "next/link";
+import React, { useEffect, useState } from "react";
+import useSWR from "swr";
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const santas = await fetch(`${process.env.NEXT_PUBLIC_SERVER}/api/read/santa`)
@@ -30,55 +40,141 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   return { props: { santa } };
 };
 
-export default function Santa({ santa }: { santa: SantaInfo | null }) {
-  const { santa: santaData } = useSanta();
+type QuestionAnswer = {
+  id: number;
+  santa_id: string;
+  text: string;
+  question: {
+    id: number;
+    family_id: string;
+    text: string;
+  };
+};
 
-  const isAuthSantaProfile = santaData?.id == santa?.id;
+export default function Santa({
+  santa,
+}: {
+  santa: SantaInfo | null;
+}): JSX.Element {
+  const { santa: santaSession, isLoading } = useSanta({ redirectTo: "/login" });
+  const { data: answers, mutate } = useSWR<AnswerInfo[]>(
+    `/api/read/answer?santaId=${santa?.id}`,
+    fetcher
+  );
+  const [chosenFamily, setChosenFamily] = useState<{
+    id: string;
+    name: string;
+  }>({ id: "", name: "" });
+  const [questionAnswerList, setQuestionAnswerList] =
+    useState<QuestionAnswer[]>();
 
-  return (
-    <div
-      style={{
-        color: "blue",
-        display: "flex",
-        flexDirection: "column",
-        width: "100%",
-      }}
-    >
-      <div
-        style={{
-          margin: "auto",
-          width: "33%",
-        }}
-      >
-        <h1 style={{ textAlign: "center" }}>{santa?.first_name}</h1>
-        {isAuthSantaProfile && (
-          <h3 style={{ textAlign: "center" }}>Edit Details</h3>
-        )}
+  useEffect(() => {
+    const { id, name } = chosenFamily;
+    if (id && name) {
+      const filteredAnswers =
+        answers && answers.length > 0
+          ? answers?.filter((a) => a.question.family_id === id)
+          : [];
+      setQuestionAnswerList(filteredAnswers);
+    }
+  }, [chosenFamily, answers]);
+
+  const handleFamilyClick = (familyId: string, familyName: string): void => {
+    if (familyId && familyName)
+      setChosenFamily({ id: familyId, name: familyName });
+  };
+
+  const handleAnswerEdit = async (
+    answerId: number,
+    newAnswer: string,
+    questionId: number
+  ) => {
+    let response;
+    if (answerId > 0) {
+      response = await fetch("/api/update/answer", {
+        method: "PUT",
+        body: JSON.stringify({ id: answerId, text: newAnswer }),
+      });
+    } else {
+      const answer: Prisma.AnswerUncheckedCreateInput = {
+        text: newAnswer,
+        question_id: questionId,
+        santa_id: santa!.id,
+      };
+
+      response = await fetch("/api/create/answer", {
+        method: "POST",
+        body: JSON.stringify(answer),
+      });
+    }
+
+    if (response.ok) {
+      mutate();
+    }
+  };
+
+  return isLoading ? (
+    <div>
+      <h1>Loading</h1>
+    </div>
+  ) : santaSession?.isLoggedIn ? (
+    <div className="w-full flex flex-col">
+      <div className="my-2 flex flex-row justify-center">
+        <h1 className="w-full flex flex-row justify-center text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl">
+          <span className="flex flex-row">
+            {`${santaSession?.first_name}'s Homepage`}
+          </span>
+        </h1>
       </div>
-      <div
-        style={{
-          margin: "auto",
-          width: "33%",
-          alignItems: "center",
-        }}
-      >
-        <h1 style={{ textAlign: "center" }}>Families</h1>
-        {santa?.SantasOnFamilies.length === 0 ? (
-          <h3 style={{ textAlign: "center" }}>
-            You don&apos;t have any families yet!
-          </h3>
-        ) : (
-          <div style={{ alignItems: "center" }}>
-            <ol>
-              {santa?.SantasOnFamilies.map((f) => (
-                <li key={`${f.family_id}`}>
-                  <Link href={`/f/${f.family_id}`}>{f.family.name}</Link>
-                </li>
-              ))}
-            </ol>
-          </div>
-        )}
+      <div className="w-7/12 mx-auto my-4 flex flex-row">
+        <div className="flex flex-row justify-center w-1/3">
+          <FamilyList>
+            {santa?.SantasOnFamilies.map((s) => {
+              return (
+                <FamilyListCard
+                  key={`${santa.id}-${s.family.id}`}
+                  santaId={santa.id}
+                  family={{ id: s.family.id, name: s.family.name }}
+                  handleClick={handleFamilyClick}
+                />
+              );
+            })}
+          </FamilyList>
+        </div>
+        <div className="w-2/3 flex flex-col">
+          {isValidObject(questionAnswerList) ? (
+            <QuestionAnswerListCard familyName={chosenFamily.name}>
+              {santa?.SantasOnFamilies.find(
+                (f) => f.family.id === chosenFamily.id
+              )?.family.Questions.map((q, idx) => {
+                const answer = questionAnswerList!.find(
+                  (a) => a.question.id === q.id
+                );
+                return (
+                  <QuestionAnswerListItem
+                    key={`${santa.id}-${q.id}`}
+                    question={{ text: q.text, id: q.id }}
+                    answer={
+                      isValidObject(answer)
+                        ? { id: answer!.id, text: answer!.text }
+                        : {
+                            id: -1,
+                            text: "You have not answered this question yet!",
+                          }
+                    }
+                    rowColor={idx % 2 === 0 ? "bg-gray-50" : "bg-white"}
+                    editAnswer={handleAnswerEdit}
+                  />
+                );
+              })}
+            </QuestionAnswerListCard>
+          ) : (
+            <EmptyQuestionAnswerListCard />
+          )}
+        </div>
       </div>
     </div>
+  ) : (
+    <div>Unauthorized!</div>
   );
 }

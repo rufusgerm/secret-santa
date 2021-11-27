@@ -2,13 +2,12 @@ import { Prisma } from ".prisma/client";
 import { InformationCircleIcon } from "@heroicons/react/solid";
 import useSanta, { fetcher } from "@lib/hooks/useSanta";
 import { FamilyIdOnly, FamilyInfo, QuestionInfo } from "@lib/types";
-import FamilyList, {
-  FamilyMember,
+import FamilyMemberList, {
+  FamilyMemberCard,
   FamilyMemberAnswers,
-} from "components/FamilyList";
-import { FamilyRules } from "components/FamilyRules";
-import InviteForm from "components/Invite";
-import QuestionList from "components/QuestionList";
+} from "components/FamilyMemberList";
+import { FamilyRulesCard } from "components/FamilyRulesCard";
+import InviteForm from "components/InviteForm";
 import { GetStaticPaths, GetStaticProps } from "next";
 import React, { FormEvent, useState } from "react";
 import useSWR from "swr";
@@ -44,8 +43,12 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
 export default function Family({ family }: { family: FamilyInfo | null }) {
   const { santa, isLoading } = useSanta();
-  const { data: questions, mutate } = useSWR<QuestionInfo[]>(
+  const { mutate: mutateQuestions } = useSWR<QuestionInfo[]>(
     `/api/read/question?familyId=${family?.id}`,
+    fetcher
+  );
+  const { data: familyData } = useSWR<FamilyInfo>(
+    `/api/read/family?id=${family?.id}`,
     fetcher
   );
 
@@ -77,7 +80,7 @@ export default function Family({ family }: { family: FamilyInfo | null }) {
       .then((r) => r.json())
       .catch((err) => console.error(err));
 
-    if (savedQuestion) mutate();
+    if (savedQuestion) mutateQuestions();
   };
 
   return (
@@ -125,18 +128,18 @@ export default function Family({ family }: { family: FamilyInfo | null }) {
             </div>
             <div>
               {!menuItem ? (
-                <FamilyRules>
+                <FamilyRulesCard>
                   {family?.rules && family.rules.length > 0
                     ? family?.rules
                     : `The ${family?.name} family hasn't set their rules yet!`}
-                </FamilyRules>
+                </FamilyRulesCard>
               ) : (
-                <FamilyList>
-                  {family!.SantasOnFamilies.filter(
+                <FamilyMemberList>
+                  {familyData?.SantasOnFamilies.filter(
                     (s) => s.santa_id !== santa?.id
                   ).map((s, idx) => {
                     return (
-                      <FamilyMember
+                      <FamilyMemberCard
                         key={s.santa_id}
                         id={s.santa_id}
                         firstName={s.santa.first_name}
@@ -161,13 +164,13 @@ export default function Family({ family }: { family: FamilyInfo | null }) {
                             />
                           );
                         })}
-                      </FamilyMember>
+                      </FamilyMemberCard>
                     );
                   })}
-                </FamilyList>
+                </FamilyMemberList>
               )}
             </div>
-            <InviteForm />
+            <InviteForm familyId={family!.id} />
           </div>
         ) : (
           <div>

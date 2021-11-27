@@ -1,7 +1,7 @@
 import { Question } from ".prisma/client";
 import prisma from "@lib/prisma";
 import { EndpointResponse, QuestionInfo } from "@lib/types";
-import { parseQueryString } from "@lib/utils/parseQueryString";
+import { parseQueryString } from "@lib/utils/validationCheckers";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function GetQuestion(

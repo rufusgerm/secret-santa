@@ -22,11 +22,16 @@ export default function useSanta({
 
     if (
       // If redirectTo is set, redirect if the santa was not found.
-      (redirectTo && !redirectIfFound && !santa?.isLoggedIn) ||
-      (redirectIfFound && santa?.isLoggedIn)
+      redirectTo &&
+      redirectIfFound &&
+      santa?.isLoggedIn
     ) {
-      Router.push(`${redirectTo}/${santa.id}/h`);
+      Router.push(`${redirectTo}/${santa.id}/`);
     }
+    if (redirectTo && !redirectIfFound && !santa?.isLoggedIn) {
+      Router.push(`${redirectTo}`);
+    }
+
     // if (redirectIfFound && santa?.isLoggedIn && redirectTo) {
     //   console.log(`Found...redirecting to...${redirectTo}/${santa.id}`);
     //   Router.push(`${redirectTo}/${santa.id}`);

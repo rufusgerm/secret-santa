@@ -1,6 +1,7 @@
 import { AnswerInfo } from "@lib/types";
-import { parseQueryString } from "@lib/utils/parseQueryString";
+import { parseQueryString } from "@lib/utils/validationCheckers";
 import { NextApiRequest, NextApiResponse } from "next";
+import prisma from "@lib/prisma";
 
 export default async function GetAnswer(
   req: NextApiRequest,
@@ -44,6 +45,9 @@ const getAnswerById = async (
       where: {
         id: parsedId!,
       },
+      include: {
+        question: true,
+      },
     });
   return null;
 };
@@ -54,6 +58,9 @@ const getAnswersBySantaId = async (
   return await prisma.answer.findMany({
     where: {
       santa_id: id as string,
+    },
+    include: {
+      question: true,
     },
   });
 };
@@ -66,6 +73,9 @@ const getAnswersByQuestionId = async (
     return await prisma.answer.findMany({
       where: {
         question_id: parsedId,
+      },
+      include: {
+        question: true,
       },
     });
   return null;

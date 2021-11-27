@@ -13,7 +13,7 @@ export default function Navbar() {
   const { santa, isLoading } = useSanta();
 
   const navigation = [
-    { name: "Home", href: `/s/${santa?.id}/h` },
+    { name: "Home", href: `/s/${santa?.id}` },
     { name: "Logout", href: "/logout" },
   ];
 
@@ -38,7 +38,7 @@ export default function Navbar() {
               <div className="flex-1 flex items-center justify-center sm:items-stretch sm:justify-start">
                 <Link passHref href="/">
                   <h1 className="text-white text-4xl hover:cursor-pointer hover:text-[#7C9F61]">
-                    Secret Santa
+                    Simple Santa
                   </h1>
                 </Link>
               </div>
@@ -56,7 +56,7 @@ export default function Navbar() {
                             {`${santa?.first_name[0]}${santa?.last_name[0]}`}
                           </p>
                         </Menu.Item>
-                        <Link href={`/s/${santa.id}/h`} passHref>
+                        <Link href={`/s/${santa.id}`} passHref>
                           <Menu.Item
                             as="a"
                             className="mx-2 hidden sm:block my-auto"

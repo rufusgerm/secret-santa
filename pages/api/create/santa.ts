@@ -3,24 +3,25 @@ import { santaId, SantaIdOnly } from "@lib/types";
 import prisma from "lib/prisma";
 import { NextApiRequest, NextApiResponse } from "next";
 
+export type TempAcctToSantaDetails = {
+  email: string;
+  verification_code: string;
+  first_name: string;
+  last_name: string;
+};
+
 export default async function createSanta(
   req: NextApiRequest,
-  res: NextApiResponse<SantaIdOnly | string>
+  res: NextApiResponse<SantaIdOnly | { message: string }>
 ) {
   const { body, method } = req;
 
-  let response: { status: number; payload: SantaIdOnly | string } = {
-    status: 500,
-    payload: "Something went wrong on the server. Please try again later!",
-  };
-
   if (method !== "POST")
-    response = {
-      status: 405,
-      payload: "Invalid HTTP Method! Not allowed.",
-    };
+    return res
+      .status(405)
+      .json({ message: "Invalid HTTP Method! Not allowed." });
 
-  const newSanta: Santa = JSON.parse(body);
+  const newSanta: TempAcctToSantaDetails = JSON.parse(body);
 
   const checkSanta: Santa | null = await prisma.santa.findUnique({
     where: {
@@ -29,17 +30,35 @@ export default async function createSanta(
   });
 
   if (checkSanta)
-    response = {
-      status: 403,
-      payload: "User with that email already exists!",
-    };
+    return res
+      .status(403)
+      .json({ message: "User with that email already exists!" });
+
+  // validate temps list
+  const checkTempAcct = await prisma.tempAccount.findFirst({
+    where: {
+      email: newSanta.email,
+      verification_code: newSanta.verification_code,
+    },
+  });
+
+  if (!checkTempAcct)
+    return res
+      .status(400)
+      .json({
+        message: "Either your email or verification code is incorrect!",
+      });
 
   const savedSanta: SantaIdOnly = await prisma.santa.create({
-    data: newSanta,
+    data: {
+      email: newSanta.email,
+      first_name: newSanta.first_name,
+      last_name: newSanta.last_name,
+    },
     select: santaId,
   });
 
-  if (savedSanta) response = { status: 200, payload: savedSanta };
+  if (savedSanta) return res.status(200).json(savedSanta);
 
-  return res.status(response.status).json(response.payload);
+  return res.status(500).json({ message: "Something went wrong!" });
 }

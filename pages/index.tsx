@@ -7,16 +7,20 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const families: Family[] = await prisma.family.findMany();
   return {
     props: {
-      familyList: families,
+      FamilyMemberList: families,
     },
   };
 };
 
-export default function Home({ familyList }: { familyList: Family[] }) {
+export default function Home({
+  FamilyMemberList,
+}: {
+  FamilyMemberList: Family[];
+}) {
   return (
     <div>
-      <h1>Secret Santa Site!</h1>
-      {familyList.map((f: Family) => (
+      <h1>Welcome to Simple Santa</h1>
+      {FamilyMemberList.map((f: Family) => (
         <h1 key={`${f.name}-${f.created_at}`}>{f.name}</h1>
       ))}
       <Link href="s/create" passHref>
