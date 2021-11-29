@@ -25,6 +25,6 @@ async function Authenticate(req: NextApiRequest, res: NextApiResponse) {
     };
     await req.session.save();
 
-    res.json(req.session.santa);
+    return res.status(200).json(req.session.santa);
   }
 }

@@ -1,5 +1,5 @@
 import { Santa } from ".prisma/client";
-import { santaId, SantaIdOnly } from "@lib/types";
+import { SantaBaseDetails, santaId, SantaIdOnly } from "@lib/types";
 import prisma from "lib/prisma";
 import { NextApiRequest, NextApiResponse } from "next";
 
@@ -43,22 +43,39 @@ export default async function createSanta(
   });
 
   if (!checkTempAcct)
-    return res
-      .status(400)
-      .json({
-        message: "Either your email or verification code is incorrect!",
-      });
+    return res.status(400).json({
+      message: "Either your email or verification code is incorrect!",
+    });
 
-  const savedSanta: SantaIdOnly = await prisma.santa.create({
+  const savedSanta: SantaBaseDetails = await prisma.santa.create({
     data: {
       email: newSanta.email,
       first_name: newSanta.first_name,
       last_name: newSanta.last_name,
     },
-    select: santaId,
+    select: {
+      id: true,
+      first_name: true,
+      last_name: true,
+    },
   });
 
-  if (savedSanta) return res.status(200).json(savedSanta);
+  if (savedSanta) {
+    const updateTempAcct = await prisma.tempAccount.update({
+      where: {
+        id: checkTempAcct.id,
+      },
+      data: { did_activate: true },
+    });
+    const addedSantaToFamily = await prisma.santasOnFamilies.create({
+      data: {
+        santa_id: savedSanta.id,
+        family_id: checkTempAcct.invite_via_family_id,
+      },
+    });
+
+    return res.status(200).json(savedSanta);
+  }
 
   return res.status(500).json({ message: "Something went wrong!" });
 }

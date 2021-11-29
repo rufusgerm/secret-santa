@@ -8,6 +8,15 @@ export type SantaIdOnly = Prisma.SantaGetPayload<{
   select: typeof santaId;
 }>;
 
+export const santaNames = Prisma.validator<Prisma.SantaSelect>()({
+  first_name: true,
+  last_name: true,
+});
+
+export type SantaBaseDetails = Prisma.SantaGetPayload<{
+  select: typeof santaId & typeof santaNames;
+}>;
+
 export const santaFamilyDetail = {
   family: {
     select: {
