@@ -21,7 +21,7 @@ export default function useSanta({
     if (!redirectTo || !santa) return;
 
     if (
-      // If redirectTo is set, redirect if the santa was not found.
+      // If redirectTo is set, redirect if the santa was found.
       redirectTo &&
       redirectIfFound &&
       santa?.isLoggedIn
@@ -31,6 +31,8 @@ export default function useSanta({
     if (redirectTo && !redirectIfFound && !santa?.isLoggedIn) {
       Router.push(`${redirectTo}`);
     }
+
+    if (!santa?.isLoggedIn && !redirectTo) Router.push(`/`);
 
     // if (redirectIfFound && santa?.isLoggedIn && redirectTo) {
     //   console.log(`Found...redirecting to...${redirectTo}/${santa.id}`);

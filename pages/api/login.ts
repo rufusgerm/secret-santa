@@ -18,8 +18,9 @@ async function Login(req: NextApiRequest, res: NextApiResponse) {
   });
 
   if (!santa) {
-    res.statusMessage = "Santa with that email does not exist!";
-    return res.status(404).send({ ok: false });
+    return res
+      .status(404)
+      .json({ message: "Santa with that email does not exist!" });
   }
 
   const seal = await sealData(
@@ -38,5 +39,5 @@ async function Login(req: NextApiRequest, res: NextApiResponse) {
   //     `Hey there ${user.name}, <a href="">click here to login</a>.`
   //   );
 
-  res.send({ ok: true });
+  return res.status(200).json({ message: "Please check your email to login!" });
 }

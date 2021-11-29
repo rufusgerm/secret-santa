@@ -16,12 +16,12 @@ async function Session(
 ) {
   if (req.session.santa) {
     //   Later grab list of families and whether admin or not
-    res.json({
+    return res.json({
       ...req.session.santa,
       isLoggedIn: true,
     });
   } else {
-    res.json({
+    return res.json({
       id: "",
       first_name: "",
       last_name: "",

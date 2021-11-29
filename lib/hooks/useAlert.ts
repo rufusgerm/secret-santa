@@ -10,10 +10,13 @@ export function useError() {
       didMount.current = false;
       return;
     }
-    setIsError(true);
-    setTimeout(() => {
-      setIsError(false);
-    }, 5000);
+    if (errorMsg) {
+      setIsError(true);
+      setTimeout(() => {
+        setIsError(false);
+        setErrorMsg("");
+      }, 5000);
+    }
   }, [errorMsg]);
 
   const triggerErr = (msg: string) => {
@@ -33,10 +36,13 @@ export function useSuccess() {
       didMount.current = false;
       return;
     }
-    setIsSuccess(true);
-    setTimeout(() => {
-      setIsSuccess(false);
-    }, 5000);
+    if (successMsg) {
+      setIsSuccess(true);
+      setTimeout(() => {
+        setIsSuccess(false);
+        setSuccessMsg("");
+      }, 5000);
+    }
   }, [successMsg]);
 
   const triggerSuccess = (msg: string) => {

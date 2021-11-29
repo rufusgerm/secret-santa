@@ -19,7 +19,6 @@ export default function CreateSanta() {
 
   const handleCreate = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("firing!");
     setIsSumbitDisabled(true);
 
     if (!isValidEmail(email)) {

@@ -10,12 +10,20 @@ import Link from "next/link";
 import React from "react";
 
 export default function Navbar() {
-  const { santa, isLoading } = useSanta();
+  const { santa, mutateSanta } = useSanta();
 
   const navigation = [
     { name: "Home", href: `/s/${santa?.id}` },
     { name: "Logout", href: "/logout" },
   ];
+
+  const logout = async (e: { preventDefault: Function }) => {
+    e.preventDefault();
+
+    const response = await fetch("/api/logout", { method: "POST" });
+
+    if (response.ok) mutateSanta();
+  };
 
   return (
     <Disclosure as="nav" className="bg-[#165B33]">
@@ -67,17 +75,16 @@ export default function Navbar() {
                             />
                           </Menu.Item>
                         </Link>
-                        <Link href="/logout" passHref>
-                          <Menu.Item
-                            as="a"
-                            className="mx-2 hidden sm:block my-auto"
-                          >
-                            <LogoutIcon
-                              className="h-5 w-5 text-[#7C9F61] hover:text-[#91ac7c]"
-                              aria-hidden="true"
-                            />
-                          </Menu.Item>
-                        </Link>
+                        <Menu.Item
+                          as="a"
+                          onClick={(e) => logout(e)}
+                          className="mx-2 hidden sm:block my-auto cursor-pointer"
+                        >
+                          <LogoutIcon
+                            className="h-5 w-5 text-[#7C9F61] hover:text-[#91ac7c]"
+                            aria-hidden="true"
+                          />
+                        </Menu.Item>
                       </>
                     ) : (
                       <Link passHref href="/login">

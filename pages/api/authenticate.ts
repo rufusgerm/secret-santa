@@ -14,7 +14,7 @@ async function Authenticate(req: NextApiRequest, res: NextApiResponse) {
     where: { id: id as string },
   });
 
-  if (!santa) res.redirect(`/login`);
+  if (!santa) return res.status(400).json({ message: "Invalid login link!" });
 
   if (santa) {
     req.session.santa = {

@@ -19,6 +19,7 @@ const InviteForm = ({ familyId }: { familyId: string }): JSX.Element => {
 
     if (!isValidEmail(email)) {
       triggerErr("Invalid email!");
+      setIsSendDisabled(false);
       return;
     }
 
@@ -34,7 +35,9 @@ const InviteForm = ({ familyId }: { familyId: string }): JSX.Element => {
 
     if (!response.ok) {
       const { message } = await response.json();
-      triggerErr(message);
+      triggerErr(`${message}`);
+      setIsSendDisabled(false);
+      return;
     }
     setEmail("");
     setIsSendDisabled(false);
