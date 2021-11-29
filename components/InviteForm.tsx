@@ -1,18 +1,16 @@
-import useError from "@lib/hooks/useError";
+import { useError, useSuccess } from "@lib/hooks/useAlert";
 import { fetcher } from "@lib/hooks/useSanta";
 import { isValidEmail } from "@lib/utils/email";
 import { NewInviteBody } from "pages/api/create/invite";
 import { FormEvent, useState } from "react";
 import useSWR from "swr";
-import { ErrorAlert } from "./Alerts";
+import { ErrorAlert, SuccessAlert } from "./Alerts";
 
 const InviteForm = ({ familyId }: { familyId: string }): JSX.Element => {
   const [email, setEmail] = useState<string>("");
   const [isSendDisabled, setIsSendDisabled] = useState<boolean>(false);
-  const { errorMsg, setErrorMsg, isError, setIsError } = useError({
-    msg: "",
-    isActive: false,
-  });
+  const { errorMsg, isError, triggerErr } = useError();
+  const { successMsg, isSuccess, triggerSuccess } = useSuccess();
   const { mutate } = useSWR(`/api/read/family?id=${familyId}`, fetcher);
 
   const handleInvite = async (e: FormEvent<HTMLFormElement>) => {
@@ -20,7 +18,7 @@ const InviteForm = ({ familyId }: { familyId: string }): JSX.Element => {
     setIsSendDisabled(true);
 
     if (!isValidEmail(email)) {
-      console.log("Invalid email!");
+      triggerErr("Invalid email!");
       return;
     }
 
@@ -36,21 +34,18 @@ const InviteForm = ({ familyId }: { familyId: string }): JSX.Element => {
 
     if (!response.ok) {
       const { message } = await response.json();
-      setErrorMsg(message);
-      setIsError(true);
-      setTimeout(() => {
-        setIsError(false);
-        setErrorMsg("");
-      }, 5000);
+      triggerErr(message);
     }
     setEmail("");
     setIsSendDisabled(false);
+    triggerSuccess("Invite successfully sent!");
     mutate();
   };
 
   return (
     <div className="flex my-2 justify-center">
       {isError && <ErrorAlert err={errorMsg} />}
+      {isSuccess && <SuccessAlert msg={successMsg} />}
       <form
         className="flex flex-col xl:flex-row justify-center w-1/2"
         onSubmit={handleInvite}

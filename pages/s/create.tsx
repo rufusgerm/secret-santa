@@ -1,8 +1,8 @@
 import { LockClosedIcon } from "@heroicons/react/outline";
-import useError from "@lib/hooks/useError";
+import { useError, useSuccess } from "@lib/hooks/useAlert";
 import useSanta from "@lib/hooks/useSanta";
 import { SantaBaseDetails } from "@lib/types";
-import { ErrorAlert } from "components/Alerts";
+import { ErrorAlert, SuccessAlert } from "components/Alerts";
 import { isValidEmail } from "lib/utils/email";
 import { TempAcctToSantaDetails } from "pages/api/create/santa";
 import React, { FormEvent, useState } from "react";
@@ -13,10 +13,8 @@ export default function CreateSanta() {
   const [email, setEmail] = useState<string>("");
   const [verificationCode, setVerificationCode] = useState<string>("");
   const [isSubmitDisabled, setIsSumbitDisabled] = useState<boolean>(false);
-  const { isError, setIsError, errorMsg, setErrorMsg } = useError({
-    msg: "Invalid credentials",
-    isActive: false,
-  });
+  const { isError, errorMsg, triggerErr } = useError();
+  const { isSuccess, successMsg, triggerSuccess } = useSuccess();
   let { mutateSanta } = useSanta({ redirectTo: "/s", redirectIfFound: true });
 
   const handleCreate = async (e: FormEvent<HTMLFormElement>) => {
@@ -25,23 +23,13 @@ export default function CreateSanta() {
     setIsSumbitDisabled(true);
 
     if (!isValidEmail(email)) {
-      setErrorMsg("Invalid email!");
-      setIsError(true);
-      setTimeout(() => {
-        setIsError(false);
-        setErrorMsg("");
-      }, 5000);
+      triggerErr("Invalid email!");
       setIsSumbitDisabled(false);
       return;
     }
 
     if (verificationCode.trim().length !== 9) {
-      setErrorMsg("Invalid verfication code!");
-      setIsError(true);
-      setTimeout(() => {
-        setIsError(false);
-        setErrorMsg("");
-      }, 5000);
+      triggerErr("Invalid verfication code!");
       setIsSumbitDisabled(false);
       return;
     }
@@ -60,29 +48,28 @@ export default function CreateSanta() {
 
     if (!response.ok) {
       let { message } = await response.json();
-      setErrorMsg(message);
-      setIsError(true);
-      setTimeout(() => {
-        setIsError(false);
-        setErrorMsg("");
-      }, 5000);
+      triggerErr(message);
       setIsSumbitDisabled(false);
       return;
     }
     const newSanta: SantaBaseDetails = await response.json();
     // if response ok, automatically send for login endpoint
-    // throw up success alert
+    // show success alert
     const authRes = await fetch("/api/autologin", {
       method: "POST",
       body: JSON.stringify(newSanta),
     });
 
-    if (authRes.ok) mutateSanta(await authRes.json());
+    if (authRes.ok) {
+      triggerSuccess("Account created! Logging in...");
+      mutateSanta(await authRes.json());
+    }
   };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen">
       {isError && <ErrorAlert err={errorMsg} />}
+      {isSuccess && <SuccessAlert msg={successMsg} />}
       <div className="bg-[#165B33] w-full sm:w-3/4 max-w-lg px-12 py-6 shadow-2xl rounded">
         <div className="text-white pb-2 text-3xl font-semibold">
           Create Account
