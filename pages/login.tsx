@@ -1,20 +1,24 @@
 import { LockClosedIcon } from "@heroicons/react/solid";
+import { useError, useSuccess } from "@lib/hooks/useAlert";
 import useSanta from "@lib/hooks/useSanta";
 import { isValidEmail } from "@lib/utils/email";
-import { FormEvent, useState } from "react";
+import { ErrorAlert, SuccessAlert } from "components/Alerts";
+import router from "next/router";
+import React, { FormEvent, useState } from "react";
 
-export default function SignIn() {
+export default function Login() {
   const { santa, isLoading } = useSanta({
     redirectTo: "/s",
     redirectIfFound: true,
   });
   const [email, setEmail] = useState<string>("");
+  const { isError, errorMsg, triggerErr } = useError();
 
   const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!isValidEmail(email)) {
-      console.log("Invalid email!");
+      triggerErr("Invalid email!");
       return false;
     }
 
@@ -24,17 +28,19 @@ export default function SignIn() {
     });
 
     if (!response.ok) {
-      let msg = await response.json();
-      console.log(
-        `Status ${response.status}-${response.statusText} - ${msg.message}`
-      );
+      let { message } = await response.json();
+      triggerErr(message);
+
       return false;
     }
+
+    router.push("/email-sent");
   };
 
   return (
     !isLoading && (
       <>
+        {isError && <ErrorAlert err={errorMsg} />}
         <div className="min-h-full flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
           <div className="max-w-md w-full space-y-8">
             <div>

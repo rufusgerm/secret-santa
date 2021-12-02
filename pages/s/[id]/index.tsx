@@ -175,6 +175,6 @@ export default function Santa({
       </div>
     </div>
   ) : (
-    <div>Unauthorized!</div>
+    <></>
   );
 }

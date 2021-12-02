@@ -6,7 +6,13 @@ import { FormEvent, useState } from "react";
 import useSWR from "swr";
 import { ErrorAlert, SuccessAlert } from "./Alerts";
 
-const InviteForm = ({ familyId }: { familyId: string }): JSX.Element => {
+const InviteForm = ({
+  inviteSenderName,
+  familyId,
+}: {
+  inviteSenderName: string;
+  familyId: string;
+}): JSX.Element => {
   const [email, setEmail] = useState<string>("");
   const [isSendDisabled, setIsSendDisabled] = useState<boolean>(false);
   const { errorMsg, isError, triggerErr } = useError();
@@ -26,6 +32,7 @@ const InviteForm = ({ familyId }: { familyId: string }): JSX.Element => {
     const emailToInvite: NewInviteBody = {
       email,
       familyId,
+      inviteSenderName,
     };
 
     const response = await fetch("/api/create/invite", {

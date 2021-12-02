@@ -170,7 +170,10 @@ export default function Family({ family }: { family: FamilyInfo | null }) {
                 </FamilyMemberList>
               )}
             </div>
-            <InviteForm familyId={family!.id} />
+            <InviteForm
+              inviteSenderName={santa!.first_name}
+              familyId={family!.id}
+            />
           </div>
         ) : (
           <div>

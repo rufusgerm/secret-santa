@@ -11,6 +11,7 @@ Using Prisma as an ORM backed by MySQL
 Likely implementations:
 
 - ~~iron-session for: Magic Link auth~~ :white_check_mark:
-- Material UI (likely) for: aiding my inability to make GUIs look nice
+- ~~tailwind-css for: aiding my gawdawful UI design sensibilities; it helped, but there's only so much it can do~~ :white_check_mark:
+- ~~Postmark for: sending transactional emails for logins and invites~~ :white_check_mark:
 - cuid for: smaller, unique URL slugs
 - pino/logflare for: ...well, logging

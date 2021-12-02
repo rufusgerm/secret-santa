@@ -33,5 +33,5 @@ export default function Auth({ seal }: { seal: string }) {
     authSanta();
   });
 
-  return <div>Authenticating...</div>;
+  return null;
 }

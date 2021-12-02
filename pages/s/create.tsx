@@ -52,8 +52,7 @@ export default function CreateSanta() {
       return;
     }
     const newSanta: SantaBaseDetails = await response.json();
-    // if response ok, automatically send for login endpoint
-    // show success alert
+
     const authRes = await fetch("/api/autologin", {
       method: "POST",
       body: JSON.stringify(newSanta),

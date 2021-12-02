@@ -9,6 +9,10 @@ export const parseQueryString = (id: string | string[]): parsedReturn => {
   return { parsedId: isIdValid ? parsedId : -1, isIdValid };
 };
 
+export const encryptQueryString = () => {};
+
+export const decryptQueryString = () => {};
+
 export const isValidObject = (obj: Object | undefined): boolean => {
   return obj !== undefined && JSON.stringify(obj) !== "{}";
 };

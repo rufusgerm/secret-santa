@@ -16,7 +16,7 @@ else {
       // rejectOnNotFound: true,
     });
   } else {
-    console.log("It does, grabbing current instance!");
+    console.log("It does, grabbing current prisma instance!");
     prisma = global.prisma;
   }
 }

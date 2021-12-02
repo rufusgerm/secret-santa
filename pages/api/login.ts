@@ -2,6 +2,13 @@ import { sessionOptions, withSessionRoute } from "lib/withSession";
 import { sealData } from "iron-session";
 import prisma from "lib/prisma";
 import { NextApiRequest, NextApiResponse } from "next";
+import {
+  baseTemplate,
+  EmailTemplate,
+  LoginTemplateModel,
+  sendEmail,
+  TemplateAlias,
+} from "@lib/utils/email";
 
 export default withSessionRoute(Login);
 
@@ -32,12 +39,18 @@ async function Login(req: NextApiRequest, res: NextApiResponse) {
     }
   );
 
-  console.log(`MagicLink: http://localhost:3000/auth?seal=${seal}`);
-  //   await sendEmail(
-  //     user.email,
-  //     "Magic link",
-  //     `Hey there ${user.name}, <a href="">click here to login</a>.`
-  //   );
+  const loginTemplate: LoginTemplateModel = {
+    ...baseTemplate,
+    user_name: santa.first_name,
+    action_url: `${process.env.NEXT_PUBLIC_SERVER}/auth?seal=${seal}`,
+  };
+
+  const emailTemplate: EmailTemplate = {
+    templateAlias: TemplateAlias.LOGIN,
+    templateModel: loginTemplate,
+  };
+
+  sendEmail({ toAddr: santa.email, template: emailTemplate });
 
   return res.status(200).json({ message: "Please check your email to login!" });
 }
