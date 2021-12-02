@@ -52,7 +52,7 @@ export default function Family({ family }: { family: FamilyInfo | null }) {
     fetcher
   );
 
-  const [menuItem, setMenuItem] = useState<boolean>(false);
+  const [menuItem, setMenuItem] = useState<boolean>(true);
 
   const { isViewerFamily, isViewerAdmin } = santaOnFamily(
     santa?.id as string,
@@ -100,18 +100,6 @@ export default function Family({ family }: { family: FamilyInfo | null }) {
           <div className="">
             <div className="mt-6 mb-2 flex justify-center">
               <div className="mt-8 flex justify-evenly w-1/2 lg:mt-0 lg:flex-shrink-0">
-                <div className="inline-flex rounded-md shadow">
-                  <a
-                    onClick={(e) => setMenuItem(false)}
-                    className={`inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md cursor-pointer ${
-                      !menuItem
-                        ? "text-white bg-[#146B3A] hover:bg-[#165B33]"
-                        : 'text-[#146B3A] bg-white hover:bg-gray-100"'
-                    } `}
-                  >
-                    Family Rules
-                  </a>
-                </div>
                 <div className="ml-3 inline-flex rounded-md shadow">
                   <a
                     onClick={(e) => setMenuItem(true)}
@@ -122,6 +110,18 @@ export default function Family({ family }: { family: FamilyInfo | null }) {
                     } `}
                   >
                     Members
+                  </a>
+                </div>
+                <div className="inline-flex rounded-md shadow">
+                  <a
+                    onClick={(e) => setMenuItem(false)}
+                    className={`inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md cursor-pointer ${
+                      !menuItem
+                        ? "text-white bg-[#146B3A] hover:bg-[#165B33]"
+                        : 'text-[#146B3A] bg-white hover:bg-gray-100"'
+                    } `}
+                  >
+                    Family Rules
                   </a>
                 </div>
               </div>
