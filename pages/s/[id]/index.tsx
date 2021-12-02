@@ -14,7 +14,7 @@ import React, { useEffect, useState } from "react";
 import useSWR from "swr";
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const santas = await fetch(`${process.env.NEXT_PUBLIC_SERVER}/api/read/santa`)
+  const santas = await fetch(`${process.env.NEXT_PUBLIC_ABS_API_READ}/santa`)
     .then((r) => r.json())
     .catch((err) => console.error(err));
 
@@ -32,7 +32,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   const id = params?.id as string;
 
   const santa = await fetch(
-    `${process.env.NEXT_PUBLIC_SERVER}/api/read/santa?id=${id}`
+    `${process.env.NEXT_PUBLIC_ABS_API_READ}/santa?id=${id}`
   )
     .then((r) => r.json())
     .catch((err) => console.error(err));
