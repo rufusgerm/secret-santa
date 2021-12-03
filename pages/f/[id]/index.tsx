@@ -9,15 +9,12 @@ import FamilyMemberList, {
 import { FamilyRulesCard } from "components/FamilyRulesCard";
 import InviteForm from "components/InviteForm";
 import { GetStaticPaths, GetStaticProps } from "next";
+import { getFamilies, getFamilyById } from "pages/api/read/family";
 import React, { FormEvent, useState } from "react";
 import useSWR from "swr";
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const allFamilyIds = (await fetch(
-    `${process.env.NEXT_PUBLIC_ABS_API_READ}/family`
-  )
-    .then((r) => r.json())
-    .catch((err) => console.error(err))) as FamilyIdOnly[];
+  const allFamilyIds = await getFamilies();
 
   const paths = allFamilyIds.map((f: FamilyIdOnly) => ({
     params: { id: f.id },
@@ -32,13 +29,12 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const id = params?.id as string;
 
-  let family: FamilyInfo | null = await fetch(
-    `${process.env.NEXT_PUBLIC_ABS_API_READ}/family?id=${id}`
-  )
-    .then((r) => r.json())
-    .catch((err) => console.error(err));
+  let family: FamilyInfo | null = await getFamilyById(id);
 
-  return { props: { family } };
+  return {
+    props: { family },
+    revalidate: 60,
+  };
 };
 
 export default function Family({ family }: { family: FamilyInfo | null }) {

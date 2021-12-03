@@ -1,4 +1,5 @@
 import { Answer } from ".prisma/client";
+import prisma from "lib/prisma";
 import { answerDetail, AnswerInfo } from "@lib/types";
 import { NextApiRequest, NextApiResponse } from "next";
 

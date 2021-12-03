@@ -1,6 +1,7 @@
 import { Family } from ".prisma/client";
 import { FamilyIdOnly } from "@lib/types";
 import { NextApiRequest, NextApiResponse } from "next";
+import prisma from "lib/prisma";
 
 export default async function createFamily(
   req: NextApiRequest,

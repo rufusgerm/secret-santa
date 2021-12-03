@@ -21,7 +21,7 @@ export default async function GetFamily(
   if (!id) return res.json(await getFamilies());
 }
 
-const getFamilyById = async (id: string): Promise<FamilyInfo | null> => {
+export const getFamilyById = async (id: string): Promise<FamilyInfo | null> => {
   // TODO: This isn't handled right. There is no check for null; the user
   // should know that the family id didn't return a record
   return await prisma.family.findUnique({
@@ -30,7 +30,7 @@ const getFamilyById = async (id: string): Promise<FamilyInfo | null> => {
   });
 };
 
-const getFamilies = async (): Promise<FamilyIdOnly[]> => {
+export const getFamilies = async (): Promise<FamilyIdOnly[]> => {
   // TODO: This isn't handled right. There is no check for an empty array (i.e. no records found);
   // the user should know that no records were found
   return await prisma.family.findMany({

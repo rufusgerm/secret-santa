@@ -60,5 +60,5 @@ export const sendEmail = ({
     To: toAddr,
     TemplateAlias: template.templateAlias,
     TemplateModel: template.templateModel,
-  });
+  }).catch((err: string | undefined) => { throw new Error(err)});
 };

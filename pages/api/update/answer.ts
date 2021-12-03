@@ -1,4 +1,5 @@
 import { answerDetail, AnswerInfo } from "@lib/types";
+import prisma from "lib/prisma";
 import { NextApiRequest, NextApiResponse } from "next";
 
 type AnswerUpdate = {

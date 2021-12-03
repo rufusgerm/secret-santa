@@ -1,5 +1,4 @@
-import { Answer, Prisma } from ".prisma/client";
-import { PencilIcon } from "@heroicons/react/outline";
+import { Prisma } from ".prisma/client";
 import useSanta, { fetcher } from "@lib/hooks/useSanta";
 import { AnswerInfo, SantaIdOnly, SantaInfo } from "@lib/types";
 import { isValidObject } from "@lib/utils/validationCheckers";
@@ -7,19 +6,18 @@ import { FamilyList, FamilyListCard } from "components/FamilyList";
 import {
   EmptyQuestionAnswerListCard,
   QuestionAnswerListCard,
-  QuestionAnswerListItem,
+  QuestionAnswerListItem
 } from "components/QuestionAnswerList";
 import { GetStaticPaths, GetStaticProps } from "next";
+import { getSantaById, getSantas } from "pages/api/read/santa";
 import React, { useEffect, useState } from "react";
 import useSWR from "swr";
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const santas = await fetch(`${process.env.NEXT_PUBLIC_ABS_API_READ}/santa`)
-    .then((r) => r.json())
-    .catch((err) => console.error(err));
+  const santas = await getSantas();
 
   const paths = santas.map((s: SantaIdOnly) => ({
-    params: { id: s.id },
+      params: { id: s.id },
   }));
 
   return {
@@ -31,13 +29,12 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const id = params?.id as string;
 
-  const santa = await fetch(
-    `${process.env.NEXT_PUBLIC_ABS_API_READ}/santa?id=${id}`
-  )
-    .then((r) => r.json())
-    .catch((err) => console.error(err));
+  const santa = await getSantaById(id);
 
-  return { props: { santa } };
+  return {
+    props: { santa },
+    revalidate: 60
+  };
 };
 
 type QuestionAnswer = {

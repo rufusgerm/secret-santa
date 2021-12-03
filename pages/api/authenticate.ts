@@ -1,4 +1,5 @@
 import { Santa } from ".prisma/client";
+import prisma from "lib/prisma";
 import { SantaIdOnly } from "@lib/types";
 import { unsealData } from "iron-session";
 import { sessionOptions, withSessionRoute } from "lib/withSession";
