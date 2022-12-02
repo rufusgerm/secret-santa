@@ -11,14 +11,15 @@ datasource db {
 }
 
 model Family {
-  id               String             @id @default(cuid())
-  name             String             @unique @db.VarChar(250)
-  rules            String?            @db.Text
-  created_at       DateTime           @default(now())
-  modified_at      DateTime           @default(now())
-  TempAccounts     TempAccount[]
-  SantasOnFamilies SantasOnFamilies[]
-  Questions        Question[]
+  id                  String                @id @default(cuid())
+  name                String                @unique @db.VarChar(250)
+  rules               String?               @db.Text
+  created_at          DateTime              @default(now())
+  modified_at         DateTime              @default(now())
+  TempAccounts        TempAccount[]
+  SantasOnFamilies    SantasOnFamilies[]
+  Questions           Question[]
+  QuestionsOnFamilies QuestionsOnFamilies[]
 }
 
 model Santa {
@@ -57,13 +58,23 @@ model SantasOnFamilies {
 }
 
 model Question {
-  id          Int      @id @default(autoincrement())
-  text        String   @db.VarChar(500)
-  created_at  DateTime @default(now())
-  modified_at DateTime @default(now())
+  id                  Int                   @id @default(autoincrement())
+  text                String                @db.VarChar(500)
+  created_at          DateTime              @default(now())
+  modified_at         DateTime              @default(now())
+  family_id           String
+  Family              Family                @relation(fields: [family_id], references: [id], onDelete: Cascade)
+  Answers             Answer[]
+  QuestionsOnFamilies QuestionsOnFamilies[]
+}
+
+model QuestionsOnFamilies {
+  family      Family   @relation(fields: [family_id], references: [id], onDelete: Cascade)
   family_id   String
-  Family      Family   @relation(fields: [family_id], references: [id], onDelete: Cascade)
-  Answers     Answer[]
+  question    Question @relation(fields: [question_id], references: [id], onDelete: Cascade)
+  question_id Int
+
+  @@id([family_id, question_id])
 }
 
 model Answer {
