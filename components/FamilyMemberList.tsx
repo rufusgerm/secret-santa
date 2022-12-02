@@ -1,3 +1,6 @@
+import { ChevronRightIcon } from "@heroicons/react/outline";
+import { ChevronDownIcon, EyeIcon } from "@heroicons/react/solid";
+
 type FamilyMemberListProps = {
   familyMembers: SantaInFamily[];
   isViewerAdmin: boolean;
@@ -14,7 +17,7 @@ type SantaInFamily = {
 
 const FamilyMemberList = ({ children }: { children: any }): JSX.Element => {
   return (
-    <div className="w-full flex flex-col xl:flex-row flex-wrap content-center xl:justify-center">
+    <div className="w-full flex flex-col xl:flex-row flex-wrap content-center mt-4 xl:justify-center">
       {children}
     </div>
   );
@@ -25,6 +28,8 @@ type FamilyMemberCardProps = {
   firstName: string;
   lastName: string;
   isViewerAdmin: boolean;
+  setVisible: (id: string) => void;
+  areAnswersVisible: boolean;
   children: React.ReactNode;
 };
 
@@ -33,14 +38,30 @@ export const FamilyMemberCard = ({
   firstName,
   lastName,
   isViewerAdmin,
+  setVisible,
+  areAnswersVisible,
   children,
 }: FamilyMemberCardProps): JSX.Element => {
   return (
-    <div className="bg-white m-2 w-3/4 lg:w-1/2 xl:w-1/3 shadow overflow-scroll rounded-lg">
-      <div className="px-4 py-5 sm:px-6">
-        <h3 className="text-lg leading-6 font-medium text-gray-900">{`${firstName} ${lastName}`}</h3>
+    <div
+      className={`bg-white m-2 w-3/4 lg:w-1/2 xl:w-1/3 shadow rounded-lg ${
+        !areAnswersVisible ? "max-h-[3.25rem]" : ""
+      }`}
+    >
+      <div className="flex flex-row px-1 py-2 sm:px-6 justify-around sm:justify-between max-h-14">
+        <h3 className="text-lg sm:text-3xl leading-6 my-auto font-medium text-gray-900 w-2/3">{`${firstName} ${lastName}`}</h3>
+        <ChevronDownIcon
+          onClick={() => (areAnswersVisible ? setVisible("") : setVisible(id))}
+          className={`w-8 h-8 pl-0.5 my-auto text-[#146B3A] hover:text-[#165B33] cursor-pointer transition duration-200 ${
+            areAnswersVisible ? "rotate-180" : ""
+          }`}
+        />
       </div>
-      <div className="border-t border-gray-200">
+      <div
+        className={`border-t border-gray-200 overflow-scroll h-48 ${
+          areAnswersVisible ? "visible" : "hidden"
+        }`}
+      >
         <dl>{children}</dl>
       </div>
     </div>

@@ -116,15 +116,15 @@ export default function Santa({
     </div>
   ) : santaSession?.isLoggedIn ? (
     <div className="w-full flex flex-col">
-      <div className="my-2 flex flex-row justify-center">
-        <h1 className="w-full flex flex-row justify-center text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl">
+      <div className="my-4 flex flex-row justify-center">
+        <h1 className="w-full flex flex-row justify-center text-2xl xs:text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl">
           <span className="flex flex-row">
             {`${santaSession?.first_name}'s Homepage`}
           </span>
         </h1>
       </div>
-      <div className="w-7/12 mx-auto my-4 flex flex-row">
-        <div className="flex flex-row justify-center w-1/3">
+      <div className="w-full sm:w-7/12 mx-auto my-4 flex flex-col sm:flex-row">
+        <div className="flex flex-row justify-center w-full sm:w-1/3">
           <FamilyList>
             {santa?.SantasOnFamilies.map((s) => {
               return (
@@ -138,7 +138,7 @@ export default function Santa({
             })}
           </FamilyList>
         </div>
-        <div className="w-2/3 flex flex-col">
+        <div className="w-full sm:w-2/3 flex flex-col">
           {isValidObject(questionAnswerList) ? (
             <QuestionAnswerListCard familyName={chosenFamily.name}>
               {santa?.SantasOnFamilies.find(

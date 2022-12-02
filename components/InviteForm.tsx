@@ -57,11 +57,11 @@ const InviteForm = ({
       {isError && <ErrorAlert err={errorMsg} />}
       {isSuccess && <SuccessAlert msg={successMsg} />}
       <form
-        className="flex flex-col xl:flex-row justify-center w-1/2"
+        className="flex flex-col justify-center xl:justify-between w-3/4 sm:w-1/2 md:w-2/5"
         onSubmit={handleInvite}
       >
-        <h2 className="text-3xl mx-2 my-auto font-extrabold tracking-tight text-gray-900 sm:text-xl">
-          <label>Invite someone to this family: </label>
+        <h2 className="w-full text-lg xs:text-xl sm:text-2xl text-[#146B3A] text-center mx-auto my-auto font-extrabold tracking-tight">
+          <label>Invite someone to this family:</label>
         </h2>
         <input
           type="email"
@@ -69,12 +69,12 @@ const InviteForm = ({
           onChange={(e) => setEmail(e.target.value)}
           required
           aria-label="Email"
-          className={`mx-2 my-auto rounded border-gray-400 
-          focus:outline-none focus:ring focus:ring-[#7C9F61] focus:ring-opacity-80`}
+          className={`mt-1 my-auto rounded border-gray-400 h-8
+          focus:outline-none focus:ring focus:ring-[#7C9F61] focus:ring-opacity-80 w-full`}
         />
         <button
           type="submit"
-          className={`px-4 py-2 mt-2 xl:mt-0 font-medium tracking-wide text-white 
+          className={`px-4 py-2 mt-2 font-medium tracking-wide text-white 
           capitalize transition-colors duration-200 transform bg-[#146B3A]
           rounded-md hover:bg-[#165B33] focus:outline-none focus:ring
           focus:ring-[#7C9F61] focus:ring-opacity-80`}

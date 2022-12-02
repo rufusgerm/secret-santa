@@ -8,7 +8,10 @@ import router from "next/router";
 import React, { FormEvent, useState } from "react";
 
 export default function Home() {
-  const { santa, isLoading } = useSanta();
+  const { santa, isLoading } = useSanta({
+    redirectTo: "/s",
+    redirectIfFound: true,
+  });
   const [email, setEmail] = useState<string>("");
   const { isError, errorMsg, triggerErr } = useError();
 
@@ -52,7 +55,7 @@ export default function Home() {
               {isError && <ErrorAlert err={errorMsg} />}
               <form
                 onSubmit={handleLogin}
-                className="mt-8 space-y-6"
+                className="mt-8 space-y-6 "
                 action="#"
                 method="POST"
               >
@@ -92,7 +95,7 @@ export default function Home() {
           )}
           {santa?.isLoggedIn && (
             <Link href={`/s/${santa.id}`} passHref>
-              <button className="group relative w-3/4 mt-4 flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-[#146B3A] hover:bg-[#165B33] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#7C9F61]">
+              <button className="group relative w-full xs:w-3/4 mt-4 flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-[#146B3A] hover:bg-[#165B33] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#7C9F61]">
                 <span className="absolute left-0 inset-y-0 flex items-center pl-3">
                   <HomeIcon
                     className="h-5 w-5 text-[#7C9F61] group-hover:text-[#91ac7c]"

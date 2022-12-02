@@ -6,16 +6,34 @@ type QuestionAnswerListCardProps = {
   children: React.ReactNode;
 };
 
+
+export const EmptyQuestionAnswerListCard = ({}) => {
+  return (
+    <section className="mt-4 w-full flex justify-center">
+      <div className="bg-white m-2 shadow overflow-scroll rounded-lg px-6 py-8">
+        <div className="flex justify-center">
+          <div className="lg:w-1/2 h-96 flex flex-col justify-center">
+            <h2 className="text-xl font-bold text-center text-gray-300 dark:text-gray-100">
+              Choose one of your families to see the questions and your
+              answers...
+            </h2>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
 export const QuestionAnswerListCard = ({
   familyName,
   children,
 }: QuestionAnswerListCardProps): JSX.Element => {
   return (
-    <section className="mt-4 w-full flex justify-center">
-      <div className="bg-white mt-4 shadow h-96 overflow-scroll m-2 sm:rounded-lg px-6 py-8 mx-auto">
+    <section className="mt-4 w-full h-full flex justify-center">
+      <div className="bg-white w-full m-4 shadow overflow-scroll rounded-lg px-6 py-2 sm:py-8">
         <div className="px-4 py-5 sm:px-6">
           <h3 className="text-lg leading-6 font-medium text-gray-900">
-            The {familyName} Family
+            Answer the {familyName} Family Questions Here!
           </h3>
         </div>
         <div className="border-t border-gray-200">
@@ -94,19 +112,3 @@ export const QuestionAnswerListItem = ({
   );
 };
 
-export const EmptyQuestionAnswerListCard = ({}) => {
-  return (
-    <section className="mt-4 w-full flex justify-center">
-      <div className="bg-white m-2 shadow overflow-scroll sm:rounded-lg px-6 py-8 mx-auto">
-        <div className="flex justify-center">
-          <div className="lg:w-1/2 h-96 flex flex-col justify-center">
-            <h2 className="text-xl font-bold text-center text-gray-300 dark:text-gray-100">
-              Choose one of your families to see the questions and your
-              answers...
-            </h2>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-};

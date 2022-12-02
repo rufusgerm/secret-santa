@@ -53,7 +53,7 @@ async function Login(req: NextApiRequest, res: NextApiResponse) {
   try {
     sendEmail({ toAddr: santa.email, template: emailTemplate });
   } catch (err) {
-    return res.status(500).json(err);
+    return res.status(500).json("Here's the error from email: " + err);
   }
 
   return res.status(200).json({ message: "Please check your email to login!" });

@@ -49,6 +49,7 @@ export default function Family({ family }: { family: FamilyInfo | null }) {
   );
 
   const [menuItem, setMenuItem] = useState<boolean>(true);
+  const [showMemberIdAnswers, setShowMemberIdAnswers] = useState<string>("");
 
   const { isViewerFamily, isViewerAdmin } = santaOnFamily(
     santa?.id as string,
@@ -83,26 +84,26 @@ export default function Family({ family }: { family: FamilyInfo | null }) {
     !isLoading && (
       <div className="flex flex-col my-2">
         <div className="mt-2 flex flex-row justify-center">
-          <h1 className="w-full flex flex-row justify-center text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl">
+          <h1 className="w-full flex flex-row justify-center text-3xl tracking-tight font-extrabold text-[#165B33] sm:text-5xl md:text-6xl">
             <span className="flex flex-row">
               The {family?.name} Family{" "}
-              {isViewerAdmin && (
+              {/* {isViewerAdmin && (
                 <InformationCircleIcon className="my-auto mx-4 w-8 h-8" />
-              )}
+              )} */}
             </span>
           </h1>
         </div>
         {isViewerFamily ? (
-          <div className="">
-            <div className="mt-6 mb-2 flex justify-center">
-              <div className="mt-8 flex justify-evenly w-1/2 lg:mt-0 lg:flex-shrink-0">
-                <div className="ml-3 inline-flex rounded-md shadow">
+          <div>
+            <div className="sm:mt-6 sm:mb-2 flex justify-center">
+              <div className="mt-4 flex justify-around lg:justify-evenly sm:mt-0 lg:flex-shrink-0 w-3/4">
+                <div className="inline-flex mr-2 rounded-md shadow">
                   <a
                     onClick={(e) => setMenuItem(true)}
-                    className={`inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white cursor-pointer ${
+                    className={`inline-flex items-center justify-center px-5 py-3 border border-transparent text-sm sm:text-base font-medium rounded-md text-white cursor-pointer ${
                       menuItem
                         ? "text-white bg-[#146B3A] hover:bg-[#165B33]"
-                        : 'text-[#146B3A] bg-white hover:bg-gray-100"'
+                        : "text-[#146B3A] bg-white hover:bg-gray-100"
                     } `}
                   >
                     Members
@@ -111,10 +112,10 @@ export default function Family({ family }: { family: FamilyInfo | null }) {
                 <div className="inline-flex rounded-md shadow">
                   <a
                     onClick={(e) => setMenuItem(false)}
-                    className={`inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md cursor-pointer ${
+                    className={`inline-flex items-center justify-center px-5 py-3 border border-transparent text-sm sm:text-base font-medium rounded-md cursor-pointer ${
                       !menuItem
                         ? "text-white bg-[#146B3A] hover:bg-[#165B33]"
-                        : 'text-[#146B3A] bg-white hover:bg-gray-100"'
+                        : "text-[#146B3A] bg-white hover:bg-gray-100"
                     } `}
                   >
                     Family Rules
@@ -122,7 +123,7 @@ export default function Family({ family }: { family: FamilyInfo | null }) {
                 </div>
               </div>
             </div>
-            <div>
+            <div className="h-auto">
               {!menuItem ? (
                 <FamilyRulesCard>
                   {family?.rules && family.rules.length > 0
@@ -141,6 +142,8 @@ export default function Family({ family }: { family: FamilyInfo | null }) {
                         firstName={s.santa.first_name}
                         lastName={s.santa.last_name}
                         isViewerAdmin={isViewerAdmin}
+                        setVisible={setShowMemberIdAnswers}
+                        areAnswersVisible={showMemberIdAnswers == s.santa_id}
                       >
                         {family?.Questions.map((q, idx) => {
                           const answer = s.santa.Answers.find(

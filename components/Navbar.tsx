@@ -12,9 +12,12 @@ import React from "react";
 export default function Navbar() {
   const { santa, mutateSanta } = useSanta();
 
-  const navigation = [
+  const navigation = santa?.isLoggedIn ? [
     { name: "Home", href: `/s/${santa?.id}` },
     { name: "Logout", href: "/logout" },
+  ] : [
+    { name: "Home", href: `/` },
+    { name: "Login", href: "/login" },
   ];
 
   const logout = async (e: { preventDefault: Function }) => {
@@ -57,7 +60,7 @@ export default function Navbar() {
                       <>
                         <Menu.Item
                           as="circle"
-                          className="bg-[#165B33] text-center mx-2 text-sm rounded-full focus:outline-none"
+                          className="bg-[#165B33] text-center hidden sm:block mx-2 text-sm rounded-full focus:outline-none"
                         >
                           <span className="sr-only">Open user menu</span>
                           <p className="h-8 w-8 rounded-full text-white bg-[#7C9F61] pt-[0.33rem]">
@@ -90,7 +93,7 @@ export default function Navbar() {
                       <Link passHref href="/login">
                         <button
                           type="submit"
-                          className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-[#7C9F61] hover:bg-[#91ac7c] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#7C9F61]"
+                          className="group relative w-full hidden xs:flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-[#7C9F61] hover:bg-[#91ac7c] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#7C9F61]"
                         >
                           <span className="absolute left-0 inset-y-0 flex items-center pl-3"></span>
                           Login

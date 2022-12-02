@@ -8,7 +8,7 @@ export const FamilyList = ({
 }): JSX.Element => {
   return (
     <div className="w-full flex flex-col">
-      <h1 className="text-4xl font-bold my-2 ml-4">Families</h1>
+      <h1 className="text-4xl font-bold mb-2 ml-4">Families</h1>
       {children}
     </div>
   );
@@ -27,7 +27,7 @@ export const FamilyListCard = ({
   handleClick: (id: string, name: string) => void;
 }) => {
   return (
-    <div className="bg-white m-2 w-2/3 h-16  shadow rounded-lg">
+    <div className="bg-white m-2 w-[95%] xs:w-2/3 h-16 shadow rounded-lg">
       <div className="h-full w-full flex flex-row overflow-hidden">
         <h3
           onClick={() => handleClick(family.id, family.name)}
