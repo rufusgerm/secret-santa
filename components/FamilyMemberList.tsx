@@ -52,7 +52,7 @@ export const FamilyMemberCard = ({
         <h3 className="text-lg sm:text-3xl leading-6 my-auto font-medium text-gray-900 w-2/3">{`${firstName} ${lastName}`}</h3>
         <ChevronDownIcon
           onClick={() => (areAnswersVisible ? setVisible("") : setVisible(id))}
-          className={`w-8 h-8 pl-0.5 my-auto text-[#146B3A] hover:text-[#165B33] cursor-pointer transition duration-200 ${
+          className={`w-8 h-8 pl-0.5 my-auto text-[#308344] hover:text-[#297439] cursor-pointer transition duration-200 ${
             areAnswersVisible ? "rotate-180" : ""
           }`}
         />

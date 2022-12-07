@@ -68,7 +68,7 @@ export default function CreateSanta() {
     <div className="flex flex-col items-center justify-center min-h-screen">
       {isError && <ErrorAlert err={errorMsg} />}
       {isSuccess && <SuccessAlert msg={successMsg} />}
-      <div className="bg-[#165B33] w-full sm:w-3/4 max-w-lg px-12 py-6 shadow-2xl rounded">
+      <div className="bg-[#297439] w-full sm:w-3/4 max-w-lg px-12 py-6 shadow-2xl rounded">
         <div className="text-white pb-2 text-3xl font-semibold">
           Create Account
         </div>
@@ -114,7 +114,7 @@ export default function CreateSanta() {
           <button
             type="submit"
             className={`group relative w-full flex justify-center py-2 px-4 border border-transparent 
-            text-sm font-medium rounded-md text-white bg-[#146B3A] hover:bg-[#1d7943]
+            text-sm font-medium rounded-md text-white bg-[#308344] hover:bg-[#1d7943]
             focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#7C9F61]`}
             disabled={isSubmitDisabled}
           >

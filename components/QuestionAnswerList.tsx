@@ -6,7 +6,6 @@ type QuestionAnswerListCardProps = {
   children: React.ReactNode;
 };
 
-
 export const EmptyQuestionAnswerListCard = ({}) => {
   return (
     <section className="mt-4 w-full flex justify-center">
@@ -29,7 +28,7 @@ export const QuestionAnswerListCard = ({
   children,
 }: QuestionAnswerListCardProps): JSX.Element => {
   return (
-    <section className="mt-4 w-full h-full flex justify-center">
+    <section className="mt-4 w-full h-full flex justify-center mx-auto">
       <div className="bg-white w-full m-4 shadow overflow-scroll rounded-lg px-6 py-2 sm:py-8">
         <div className="px-4 py-5 sm:px-6">
           <h3 className="text-lg leading-6 font-medium text-gray-900">
@@ -90,7 +89,7 @@ export const QuestionAnswerListItem = ({
             <button
               onClick={() => handleAnswerEditing()}
               className={`px-6 py-2.5 xl:mt-0 font-medium tracking-wide text-white capitalize transition-colors duration-200 
-              transform bg-[#146B3A] rounded-md hover:bg-[#165B33] focus:outline-none focus:ring focus:ring-[#7C9F61] focus:ring-opacity-80`}
+              transform bg-[#308344] rounded-md hover:bg-[#297439] focus:outline-none focus:ring focus:ring-[#7C9F61] focus:ring-opacity-80`}
             >
               Save
             </button>
@@ -103,7 +102,7 @@ export const QuestionAnswerListItem = ({
                 setEditingAnswer(true);
                 setNewAnswer(answer.id > 0 ? answer.text : "");
               }}
-              className="w-6 h-6 cursor-pointer text-[#146B3A] rounded-md hover:text-[#7C9F61]"
+              className="w-6 h-6 cursor-pointer text-[#308344] rounded-md hover:text-[#7C9F61]"
             />
           </>
         )}
@@ -111,4 +110,3 @@ export const QuestionAnswerListItem = ({
     </div>
   );
 };
-

@@ -7,36 +7,42 @@ import {
 } from "@heroicons/react/outline";
 import useSanta from "@lib/hooks/useSanta";
 import Link from "next/link";
+import Router from "next/router";
 import React from "react";
 
 export default function Navbar() {
   const { santa, mutateSanta } = useSanta();
 
-  const navigation = santa?.isLoggedIn ? [
-    { name: "Home", href: `/s/${santa?.id}` },
-    { name: "Logout", href: "/logout" },
-  ] : [
-    { name: "Home", href: `/` },
-    { name: "Login", href: "/login" },
-  ];
+  const navigation = santa?.isLoggedIn
+    ? [
+        { name: "Home", href: `/s/${santa?.id}` },
+        { name: "Logout", href: "/logout" },
+      ]
+    : [
+        { name: "Home", href: `/` },
+        { name: "Login", href: "/login" },
+      ];
 
   const logout = async (e: { preventDefault: Function }) => {
     e.preventDefault();
 
     const response = await fetch("/api/logout", { method: "POST" });
 
-    if (response.ok) mutateSanta();
+    if (response.ok) {
+      mutateSanta();
+      Router.push("/");
+    }
   };
 
   return (
-    <Disclosure as="nav" className="bg-[#165B33]">
+    <Disclosure as="nav" className="bg-[#297439]">
       {({ open }) => (
         <>
           <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
             <div className="relative flex items-center justify-between h-16">
               <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
                 <Disclosure.Button
-                  className={`inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-[#7C9F61] focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white`}
+                  className={`inline-flex items-center justify-center p-2 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white`}
                 >
                   <span className="sr-only">Open main menu</span>
                   {open ? (
@@ -48,7 +54,7 @@ export default function Navbar() {
               </div>
               <div className="flex-1 flex items-center justify-center sm:items-stretch sm:justify-start">
                 <Link passHref href="/">
-                  <h1 className="text-white text-4xl hover:cursor-pointer hover:text-[#7C9F61]">
+                  <h1 className="text-white text-4xl hover:cursor-pointer">
                     Simple Santa
                   </h1>
                 </Link>
@@ -60,10 +66,10 @@ export default function Navbar() {
                       <>
                         <Menu.Item
                           as="circle"
-                          className="bg-[#165B33] text-center hidden sm:block mx-2 text-sm rounded-full focus:outline-none"
+                          className="text-center sm:block mx-2 text-sm rounded-full focus:outline-none"
                         >
                           <span className="sr-only">Open user menu</span>
-                          <p className="h-8 w-8 rounded-full text-white bg-[#7C9F61] pt-[0.33rem]">
+                          <p className="h-8 w-8 rounded-full text-center align-middle pt-[0.0625rem] text-[#297439] text-lg bg-white">
                             {`${santa?.first_name[0]}${santa?.last_name[0]}`}
                           </p>
                         </Menu.Item>
@@ -113,7 +119,7 @@ export default function Navbar() {
                   key={item.name}
                   as="a"
                   href={item.href}
-                  className={`text-gray-300 hover:bg-[#7C9F61] hover:text-white block px-3 py-2 rounded-md text-base font-medium`}
+                  className={`text-white hover:text-gray-300 block px-3 py-2 rounded-md text-base font-medium`}
                 >
                   {item.name}
                 </Disclosure.Button>

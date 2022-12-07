@@ -40,11 +40,11 @@ export default function Home() {
     !isLoading && (
       <div className="container px-6 py-16 mx-auto flex flex-row justify-center">
         <div className="lg:max-w-lg">
-          <h1 className="text-4xl font-semibold text-gray-800 dark:text-white lg:text-6xl">
+          <h1 className="text-4xl font-semibold text-[#308344] dark:text-white lg:text-6xl">
             Welcome To <span className="text-[#EA4630]">Simple Santa</span>
           </h1>
 
-          <p className="mt-4 text-gray-600 dark:text-gray-400 text-lg lg:text-2xl">
+          <p className="mt-4 text-[#308344] dark:text-gray-400 text-lg lg:text-2xl">
             get started with gift ideas for your family members by{" "}
             <span className="font-medium text-[#EA4630]">
               {!santa?.isLoggedIn ? `logging in` : `going to your homepage`}
@@ -79,7 +79,7 @@ export default function Home() {
                 <div>
                   <button
                     type="submit"
-                    className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-[#146B3A] hover:bg-[#165B33] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#7C9F61]"
+                    className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-[#308344] hover:bg-[#297439] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#7C9F61]"
                   >
                     <span className="absolute left-0 inset-y-0 flex items-center pl-3">
                       <LockClosedIcon
@@ -95,7 +95,7 @@ export default function Home() {
           )}
           {santa?.isLoggedIn && (
             <Link href={`/s/${santa.id}`} passHref>
-              <button className="group relative w-full xs:w-3/4 mt-4 flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-[#146B3A] hover:bg-[#165B33] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#7C9F61]">
+              <button className="group relative w-full xs:w-3/4 mt-4 flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-[#308344] hover:bg-[#297439] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#7C9F61]">
                 <span className="absolute left-0 inset-y-0 flex items-center pl-3">
                   <HomeIcon
                     className="h-5 w-5 text-[#7C9F61] group-hover:text-[#91ac7c]"

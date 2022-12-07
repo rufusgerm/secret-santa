@@ -60,7 +60,7 @@ const InviteForm = ({
         className="flex flex-col justify-center xl:justify-between w-3/4 sm:w-1/2 md:w-2/5"
         onSubmit={handleInvite}
       >
-        <h2 className="w-full text-lg xs:text-xl sm:text-2xl text-[#146B3A] text-center mx-auto my-auto font-extrabold tracking-tight">
+        <h2 className="w-full text-lg xs:text-xl sm:text-2xl text-[#308344] text-center mx-auto my-auto font-extrabold tracking-tight">
           <label>Invite someone to this family:</label>
         </h2>
         <input
@@ -75,8 +75,8 @@ const InviteForm = ({
         <button
           type="submit"
           className={`px-4 py-2 mt-2 font-medium tracking-wide text-white 
-          capitalize transition-colors duration-200 transform bg-[#146B3A]
-          rounded-md hover:bg-[#165B33] focus:outline-none focus:ring
+          capitalize transition-colors duration-200 transform bg-[#308344]
+          rounded-md hover:bg-[#297439] focus:outline-none focus:ring
           focus:ring-[#7C9F61] focus:ring-opacity-80`}
           disabled={isSendDisabled}
         >

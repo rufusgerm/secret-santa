@@ -44,7 +44,7 @@ export default function Login() {
         <div className="min-h-full flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
           <div className="max-w-md w-full space-y-8">
             <div>
-              <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+              <h2 className="mt-6 text-center text-3xl font-extrabold text-[#308344]">
                 Login To Simple Santa
               </h2>
             </div>
@@ -74,7 +74,7 @@ export default function Login() {
               <div>
                 <button
                   type="submit"
-                  className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-[#146B3A] hover:bg-[#165B33] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#7C9F61]"
+                  className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-[#308344] hover:bg-[#297439] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#7C9F61]"
                 >
                   <span className="absolute left-0 inset-y-0 flex items-center pl-3">
                     <LockClosedIcon
