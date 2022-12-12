@@ -3,6 +3,8 @@ import React, { useState } from "react";
 
 type QuestionAnswerListCardProps = {
   familyName: string;
+  isShowing: boolean;
+  closeCard: () => void;
   children: React.ReactNode;
 };
 
@@ -25,17 +27,36 @@ export const EmptyQuestionAnswerListCard = ({}) => {
 
 export const QuestionAnswerListCard = ({
   familyName,
+  isShowing,
+  closeCard,
   children,
 }: QuestionAnswerListCardProps): JSX.Element => {
   return (
-    <section className="mt-4 w-full h-full flex justify-center mx-auto">
-      <div className="bg-white w-full m-4 shadow overflow-scroll rounded-lg px-6 py-2 sm:py-8">
-        <div className="px-4 py-5 sm:px-6">
-          <h3 className="text-lg leading-6 font-medium text-gray-900">
-            Answer the {familyName} Family Questions Here!
+    <section
+      className={`fixed top-0 left-0 right-0 bottom-0 ${
+        isShowing ? "flex" : "hidden"
+      }  w-full h-screen justify-center mx-auto bg-opacity-30 bg-gray-600`}
+    >
+      <div className="bg-white w-11/12 sm:w-4/5 md:1/2 lg:w-1/2 xl:w-2/5 2xl:w-1/3 m-4 shadow rounded-lg px-6 py-2 sm:py-8">
+        <div
+          onClick={() => closeCard()}
+          className="w-full relative h-2 flex flex-row justify-end overflow-visible"
+        >
+          <div
+            className="absolute -right-5 -top-1 sm:-top-7 bg-[#308344] hover:bg-[#297439] rounded-full w-10 h-10 shadow-lg hover:scale-105 
+            ml-4 transition-transform duration-300 ease-in-out cursor-pointer"
+          >
+            <p className="w-full h-full rounded-full text-center text-white text-2xl mt-1">
+              X
+            </p>
+          </div>
+        </div>
+        <div className="flex flex-row mb-3 h-auto">
+          <h3 className="w-11/12 text-lg sm:text-2xl leading-6 font-medium text-[#297439]">
+            {familyName} Family Questions
           </h3>
         </div>
-        <div className="border-t border-gray-200">
+        <div className="border-t border-gray-200 overflow-scroll">
           <dl>{children}</dl>
         </div>
       </div>
@@ -70,7 +91,7 @@ export const QuestionAnswerListItem = ({
 
   return (
     <div className={`${rowColor} sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6`}>
-      <dt className="flex flex-col justify-center text-sm font-medium text-gray-500 ">
+      <dt className="flex flex-col justify-center text-sm font-medium text-[#297439]">
         <p>{question.text}</p>
       </dt>
       <dd
@@ -102,7 +123,7 @@ export const QuestionAnswerListItem = ({
                 setEditingAnswer(true);
                 setNewAnswer(answer.id > 0 ? answer.text : "");
               }}
-              className="w-6 h-6 cursor-pointer text-[#308344] rounded-md hover:text-[#7C9F61]"
+              className="w-6 h-6 cursor-pointer text-[#308344] rounded-md hover:text-[#297439]"
             />
           </>
         )}

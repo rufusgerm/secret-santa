@@ -6,7 +6,7 @@ import { FamilyList, FamilyListCard } from "components/FamilyList";
 import {
   EmptyQuestionAnswerListCard,
   QuestionAnswerListCard,
-  QuestionAnswerListItem
+  QuestionAnswerListItem,
 } from "components/QuestionAnswerList";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { getSantaById, getSantas } from "pages/api/read/santa";
@@ -17,7 +17,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
   const santas = await getSantas();
 
   const paths = santas.map((s: SantaIdOnly) => ({
-      params: { id: s.id },
+    params: { id: s.id },
   }));
 
   return {
@@ -33,7 +33,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
   return {
     props: { santa },
-    revalidate: 60
+    revalidate: 60,
   };
 };
 
@@ -62,8 +62,10 @@ export default function Santa({
     id: string;
     name: string;
   }>({ id: "", name: "" });
-  const [questionAnswerList, setQuestionAnswerList] =
-    useState<QuestionAnswer[]>();
+  const [questionAnswerList, setQuestionAnswerList] = useState<
+    QuestionAnswer[]
+  >([]);
+  const [shouldShowModal, setShouldShowModal] = useState(false);
 
   useEffect(() => {
     const { id, name } = chosenFamily;
@@ -76,9 +78,14 @@ export default function Santa({
     }
   }, [chosenFamily, answers]);
 
-  const handleFamilyClick = (familyId: string, familyName: string): void => {
-    if (familyId && familyName)
+  const handleFamilySelection = (
+    familyId: string,
+    familyName: string
+  ): void => {
+    if (familyId && familyName) {
       setChosenFamily({ id: familyId, name: familyName });
+      setShouldShowModal(true);
+    }
   };
 
   const handleAnswerEdit = async (
@@ -116,15 +123,15 @@ export default function Santa({
     </div>
   ) : santaSession?.isLoggedIn ? (
     <div className="w-full flex flex-col">
-      <div className="my-4 flex flex-row justify-center">
-        <h1 className="w-full flex flex-row justify-center text-2xl xs:text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl">
+      {/* <div className="my-4 flex flex-row justify-center">
+        <h1 className="w-full flex flex-row justify-center text-2xl xs:text-4xl tracking-tight font-extrabold text-[#297439] sm:text-5xl md:text-6xl">
           <span className="flex flex-row">
             {`${santaSession?.first_name}'s Homepage`}
           </span>
         </h1>
-      </div>
-      <div className="w-full sm:w-7/12 mx-auto my-4 flex flex-col sm:flex-row">
-        <div className="flex flex-row justify-center w-full sm:w-1/3">
+      </div> */}
+      <div className="w-full sm:w-3/4 mx-auto my-4 flex flex-col">
+        <div className="flex flex-row justify-center w-11/12 sm:w-4/5 md:1/2 lg:w-1/2 xl:w-2/5 2xl:w-1/3 mx-auto">
           <FamilyList>
             {santa?.SantasOnFamilies.map((s) => {
               return (
@@ -132,15 +139,19 @@ export default function Santa({
                   key={`${santa.id}-${s.family.id}`}
                   santaId={santa.id}
                   family={{ id: s.family.id, name: s.family.name }}
-                  handleClick={handleFamilyClick}
+                  familySelection={handleFamilySelection}
                 />
               );
             })}
           </FamilyList>
         </div>
-        <div className="w-full sm:w-2/3 flex flex-col">
+        <div className="w-11/12 sm:w-4/5 md:1/2 lg:w-1/2 xl:w-2/5 2xl:w-1/3 flex flex-col mx-auto">
           {isValidObject(questionAnswerList) ? (
-            <QuestionAnswerListCard familyName={chosenFamily.name}>
+            <QuestionAnswerListCard
+              isShowing={shouldShowModal}
+              closeCard={() => setShouldShowModal(false)}
+              familyName={chosenFamily.name}
+            >
               {santa?.SantasOnFamilies.find(
                 (f) => f.family.id === chosenFamily.id
               )?.family.Questions.map((q, idx) => {
